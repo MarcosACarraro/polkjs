@@ -4,229 +4,90 @@
 <head>
     <meta charset="utf-8" />
     <title>Cidade</title>
+    <link href="style/menu.css" rel="stylesheet" />
     <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="jquery-custom/jquery-ui.css" />
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
     <script src="jquery-custom/external/jquery/jquery.js"></script>
     <script src="jquery-custom/jquery-ui.js"></script>
     <script src="bootstrap/js/bootstrap.min.js"></script>
-    <style>
-        /* make sidebar nav vertical */
-        @media (min-width: 768px) {
-            .affix-content .container {
-                width: 700px;
-            }
-
-            html, body {
-                background-color: #f8f8f8;
-                height: 100%;
-                overflow: hidden;
-            }
-
-            .affix-content .container .page-header {
-                margin-top: 0;
-            }
-
-            .sidebar-nav {
-                position: fixed;
-                width: 100%;
-            }
-
-            .affix-sidebar {
-                padding-right: 0;
-                font-size: small;
-                padding-left: 0;
-            }
-
-            .affix-row, .affix-container, .affix-content {
-                height: 100%;
-                margin-left: 0;
-                margin-right: 0;
-            }
-
-            .affix-content {
-                background-color: white;
-            }
-
-            .sidebar-nav .navbar .navbar-collapse {
-                padding: 0;
-                max-height: none;
-            }
-
-            .sidebar-nav .navbar {
-                border-radius: 0;
-                margin-bottom: 0;
-                border: 0;
-            }
-
-                .sidebar-nav .navbar ul {
-                    float: none;
-                    display: block;
-                }
-
-                .sidebar-nav .navbar li {
-                    float: none;
-                    display: block;
-                }
-
-                    .sidebar-nav .navbar li a {
-                        padding-top: 12px;
-                        padding-bottom: 12px;
-                    }
-        }
-
-        @media (min-width: 769px) {
-            .affix-content .container {
-                width: 600px;
-            }
-
-                .affix-content .container .page-header {
-                    margin-top: 0;
-                }
-        }
-
-        @media (min-width: 992px) {
-            .affix-content .container {
-                width: 900px;
-            }
-
-                .affix-content .container .page-header {
-                    margin-top: 0;
-                }
-        }
-
-        @media (min-width: 1220px) {
-            .affix-row {
-                overflow: hidden;
-            }
-
-            .affix-content {
-                overflow: auto;
-            }
-
-                .affix-content .container {
-                    width: 1000px;
-                }
-
-                    .affix-content .container .page-header {
-                        margin-top: 0;
-                    }
-
-            .affix-content {
-                padding-right: 30px;
-                padding-left: 30px;
-            }
-
-            .affix-title {
-                border-bottom: 1px solid #ecf0f1;
-                padding-bottom: 10px;
-            }
-
-            .navbar-nav {
-                margin: 0;
-            }
-
-            .navbar-collapse {
-                padding: 0;
-            }
-
-            .sidebar-nav .navbar li a:hover {
-                background-color: #428bca;
-                color: white;
-            }
-
-            .sidebar-nav .navbar li a > .caret {
-                margin-top: 8px;
-            }
-        }
-        .navbar {
-            margin-bottom:0px!important;
-        }
-    </style>
+    <script src="menu.js"></script>
+    <script src="lateral.js"></script>
+    <script src="cidade.js"></script>
+    <script src="confirm.js"></script>
 </head>
 <body>
-    <nav class="navbar navbar-default">
-  <div class="container-fluid">
-    <div class="navbar-header">
-      <a class="navbar-brand" href="#">Polk System</a>
-    </div>
-  </div>
-</nav>
-    <div class="row affix-row">
-        <div class="col-sm-3 col-md-2 affix-sidebar">
-            <div class="sidebar-nav">
-                <div class="navbar navbar-default" role="navigation">
-                    <div class="navbar-header">
-                        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".sidebar-navbar-collapse">
-                            <span class="sr-only">Toggle navigation</span>
-                            <span class="icon-bar"></span>
-                            <span class="icon-bar"></span>
-                            <span class="icon-bar"></span>
-                        </button>
-                        <span class="visible-xs navbar-brand">Sidebar menu</span>
+    <div id="menuDiv"></div>
+    <div id="lateralDiv"></div>
+    <div id="ConfirmDelete"></div>
+
+    <div id="EditModal" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Cadastro</h4>
+                </div>
+                <div id="EditBody" class="modal-body">
+                    <div id="divNome">
+                        <label class="control-label" for="txtNomeCidade">Nome</label>
+                        <input id="txtNomeCidade" type="text" name="txtNomeCidade" class="form-control" />
+                        <span class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span>
+                        <span id="hbNomeCidade" class="help-block">Nome da Cidade</span>
                     </div>
-                    <div class="navbar-collapse collapse sidebar-navbar-collapse">
-                        <ul class="nav navbar-nav" id="sidenav01">
-                            <li class="active">
-                                <a href="#" data-toggle="collapse" data-target="#toggleDemo0" data-parent="#sidenav01" class="collapsed">
-                                    <h4>Cadastro
-         
-                                        <br>
-                                       <!-- <small>IOSDSV <span class="caret"></span></small>-->
-                                    </h4>
-                                </a>
-                               <!-- <div class="collapse" id="toggleDemo0" style="height: 0px;">
-                                    <ul class="nav nav-list">
-                                        <li><a href="#">ProfileSubMenu1</a></li>
-                                        <li><a href="#">ProfileSubMenu2</a></li>
-                                        <li><a href="#">ProfileSubMenu3</a></li>
-                                    </ul>
-                                </div>-->
-                            </li>
-                            <li>
-                                <a href="#" data-toggle="collapse" data-target="#toggleDemo" data-parent="#sidenav01" class="collapsed">
-                                    <span class="glyphicon glyphicon-cloud"></span>Submenu 1 <span class="caret pull-right"></span>
-                                </a>
-                                <div class="collapse" id="toggleDemo" style="height: 0px;">
-                                    <ul class="nav nav-list">
-                                        <li><a href="#">Submenu1.1</a></li>
-                                        <li><a href="#">Submenu1.2</a></li>
-                                        <li><a href="#">Submenu1.3</a></li>
-                                    </ul>
-                                </div>
-                            </li>
-                            <li class="active">
-                                <a href="#" data-toggle="collapse" data-target="#toggleDemo2" data-parent="#sidenav01" class="collapsed">
-                                    <span class="glyphicon glyphicon-inbox"></span>Submenu 2 <span class="caret pull-right"></span>
-                                </a>
-                                <div class="collapse" id="toggleDemo2" style="height: 0px;">
-                                    <ul class="nav nav-list">
-                                        <li><a href="#">Submenu2.1</a></li>
-                                        <li><a href="#">Submenu2.2</a></li>
-                                        <li><a href="#">Submenu2.3</a></li>
-                                    </ul>
-                                </div>
-                            </li>
-                            <li><a href="#"><span class="glyphicon glyphicon-lock"></span>Normalmenu</a></li>
-                            <li><a href="#"><span class="glyphicon glyphicon-calendar"></span>WithBadges <span class="badge pull-right">42</span></a></li>
-                            <li><a href=""><span class="glyphicon glyphicon-cog"></span>PreferencesMenu</a></li>
-                        </ul>
+                    <div id="divEstado">
+                        <label class="control-label" for="ddlEstado">Estado</label>
+                        <select id="ddlTipo" class="form-control">
+                            <option value="estado">Selecione o Estado</option>
+                            <option value="AC">Acre</option>
+                            <option value="AL">Alagoas</option>
+                            <option value="AM">Amazonas</option>
+                            <option value="AP">Amapá</option>
+                            <option value="BA">Bahia</option>
+                            <option value="CE">Ceará</option>
+                            <option value="DF">Distrito Federal</option>
+                            <option value="ES">Espírito Santo</option>
+                            <option value="GO">Goiás</option>
+                            <option value="MA">Maranhão</option>
+                            <option value="MT">Mato Grosso</option>
+                            <option value="MS">Mato Grosso do Sul</option>
+                            <option value="MG">Minas Gerais</option>
+                            <option value="PA">Pará</option>
+                            <option value="PB">Paraíba</option>
+                            <option value="PR">Paraná</option>
+                            <option value="PE">Pernambuco</option>
+                            <option value="PI">Piauí</option>
+                            <option value="RJ">Rio de Janeiro</option>
+                            <option value="RN">Rio Grande do Norte</option>
+                            <option value="RO">Rondônia</option>
+                            <option value="RS">Rio Grande do Sul</option>
+                            <option value="RR">Roraima</option>
+                            <option value="SC">Santa Catarina</option>
+                            <option value="SE">Sergipe</option>
+                            <option value="SP">São Paulo</option>
+                            <option value="TO">Tocantins</option>
+                        </select>
+                        <span class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span>
+                        <span id="hdTipo" class="help-block">Selecione UM!!!.</span>
                     </div>
-                    <!--/.nav-collapse -->
+                </div>
+                 <div id="divAlertSave" class="alert alert-danger">
+                    <strong>Sinto Muito!</strong> Não foi possível salvar!! 
+                </div>
+                <div id="EditFooter" class="modal-footer">
+                    <button type="button" class="btn btn-primary" onclick="javascript:crtCidade.save();">Salvar</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
                 </div>
             </div>
         </div>
-        <div class="col-sm-9 col-md-10 affix-content">
-            <div class="container">
-                <div class="page-header">
-                    <h3><span class="glyphicon glyphicon-th-list"></span>&nbsp;Cidades</h3>
-                    
-                    <div id="fb-root"></div>
-                </div>
-            </div>
-        </div>
-    </div>
+     </div>
+   
 </body>
 </html>
+<script type="text/javascript">
+    menu.create();
+    lateral.create();
+    crtCidade.create();
+</script>
 
 
