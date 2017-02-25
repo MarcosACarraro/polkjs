@@ -97,6 +97,7 @@ var lateral = (function () {
         _grid.setAttribute("id", "tableGrid");
         _header.appendChild(_grid);
 
+
     }
 
     return {
