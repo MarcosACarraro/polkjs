@@ -57,27 +57,38 @@ var lateral = (function () {
         _li1.setAttribute("class", "active");
         _ul.appendChild(_li1);
 
-
         var _menu1 = window.document.createElement("a");
         _menu1.setAttribute("href", "#");
         _menu1.setAttribute("class", "collapsed");
         _menu1.setAttribute("data-toggle", "collapse");
         _menu1.setAttribute("data-target", "#toggleDemo0");
         _menu1.setAttribute("data-parent", "#sidenav01");
-        _menu1.innerHTML = "<h4>Cadastro</h4>";
+        //_menu1.innerHTML = "<h4>Cadastro</h4>";
+        _menu1.innerHTML = "Cadastro";
         _li1.appendChild(_menu1);
        
         var _li2 = window.document.createElement("li");
         _ul.appendChild(_li2);
-
         var _menu2 = window.document.createElement("a");
         _menu2.setAttribute("class", "collapsed");
         _menu2.setAttribute("data-toggle", "collapse");
         _menu2.setAttribute("data-target", "#toggleDemo0");
         _menu2.setAttribute("data-parent", "#sidenav01");
-        _menu2.setAttribute("href", "#");
-        _menu2.innerHTML = "Cadastro";
+        _menu2.setAttribute("href", "cidade.html");
+        _menu2.innerHTML = "<span class='glyphicon glyphicon-align-justify'></span>&nbsp;Cidade";
         _li2.appendChild(_menu2);
+
+        var _li3 = window.document.createElement("li");
+        _ul.appendChild(_li3);
+        var _menu3 = window.document.createElement("a");
+        _menu3.setAttribute("class", "collapsed");
+        _menu3.setAttribute("data-toggle", "collapse");
+        _menu3.setAttribute("data-target", "#toggleDemo0");
+        _menu3.setAttribute("data-parent", "#sidenav01");
+        _menu3.setAttribute("href", "bairro.html");
+        _menu3.innerHTML = "<span class='glyphicon glyphicon-align-justify'></span>&nbsp;Bairro";
+        _li3.appendChild(_menu3);
+
 
         var _content = window.document.createElement("div");
         _content.setAttribute("class", "col-sm-9 col-md-10 affix-content");
@@ -85,18 +96,8 @@ var lateral = (function () {
 
         var _container = window.document.createElement("div");
         _container.setAttribute("class", "container");
+        _container.setAttribute("id", "mainContainer");
         _content.appendChild(_container)
-
-        var _header = window.document.createElement("div");
-        _header.setAttribute("class", "page-heade");
-        _header.innerHTML = "<h3><span class='glyphicon glyphicon-th-list'></span>&nbsp;Cidades</h3>";
-        _container.appendChild(_header);
-
-
-        var _grid = window.document.createElement("div");
-        _grid.setAttribute("id", "tableGrid");
-        _header.appendChild(_grid);
-
 
     }
 

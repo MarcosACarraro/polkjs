@@ -36,7 +36,33 @@ var createRouter = function (port) {
         });
     };
 
+    var _getparameters = function (req) {
+        var parameters = [];
+        var result = {};
+        var stringParameters = {};
+        var q = req.url.split('?');
+        if (q.length >= 2) {
+            stringParameters = q[1].split('&');
+            for (var i = 0; i < stringParameters.length; i++) {
+                itens = stringParameters[i].split('=');
+                var result = {};
+                result.parameter = itens[0];
+                result.value = itens[1];
+                parameters.push(result);
+            }
+        }
+        return parameters;
+    }
+
+    var _getUrl = function (req) {
+        var q = req.url.split('?');
+        return q[0];
+    }
+ 
     http.createServer(function (req, res) {
+        var parameters = _getparameters(req);
+        req.url = _getUrl(req);
+        req.parameters = parameters;
         handleBody(req, res, function () {
             executeInterceptors(0, req, res);
             if (!routes[req.method][req.url]) {

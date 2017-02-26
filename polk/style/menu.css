@@ -1,4 +1,11 @@
 ﻿/* make sidebar nav vertical */
+.toppolk {
+    background:#337ab7!important;
+}
+.titlepolk {
+    color:white!important;;
+}
+
 @media (min-width: 768px) {
     .affix-content .container {
         width: 700px;

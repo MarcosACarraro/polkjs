@@ -1,15 +1,47 @@
 var crtCidade = (function () {
+    var _mainDiv;
+    var _id = 0;
+    var _idEdit = 0;
+    var _idExcluir = 0;
+    var _datasource = [];
+    var _table = {};
+    var _formValid = 0;
+
     var _txtNome;
     var _ddlEstado;
-    var _datasource;
-    var _formValid = 0;
+
+    var _params = function (req) {
+        var parameters = [];
+        var result = {};
+        var stringParameters = {};
+        var q = req.url.split('?');
+        if (q.length >= 2) {
+            stringParameters = q[1].split('&');
+            for (var i = 0; i < stringParameters.length; i++) {
+                itens = stringParameters[i].split('=');
+                var result = {};
+                result.parameter = itens[0];
+                result.value = itens[1];
+                parameters.push(result);
+            }
+        }
+        return parameters;
+    }
+
+    var _getUrl = function (req) {
+        var q = req.url.split('?');
+        return q[0];
+    }
 
 
     var _create = function () {
 
-        _mainDiv = window.document.getElementById("tableGrid");
+        _mainDiv = window.document.getElementById("mainContainer");
 
-         _createEdit.call(this);
+        var _header = window.document.createElement("div");
+        _header.setAttribute("class", "page-heade");
+        _header.innerHTML = "<h3><span class='glyphicon glyphicon-th-list'></span>&nbsp;Cidades</h3>";
+        _mainDiv.appendChild(_header);
         _table = window.document.createElement("table");
         _table.setAttribute("class", "table table-striped table-hover table-responsive");
 
@@ -46,6 +78,7 @@ var crtCidade = (function () {
 
         _tableDataBind.call(this);
 
+        _createEdit.call(this);
         ConfirmDelete.create("crtCidade.removeAt()");
         
     }
@@ -66,11 +99,11 @@ var crtCidade = (function () {
             cell4.setAttribute("width", "30px");
             cell4.setAttribute("align", "center");
 
-            cell0.innerHTML = _datasource[i].codCidade;
+            cell0.innerHTML = _datasource[i].CodCidade;
             cell1.innerHTML = _datasource[i].NomeCidade;
             cell2.innerHTML = _datasource[i].Estado;
-            cell3.innerHTML = "<a href='#' onClick='crtCidade.editAt(" + _datasource[i].codCidade + ");return false;'><span class='glyphicon glyphicon-edit'></span></a></div>";
-            cell4.innerHTML = "<a href='#' onClick='crtCidade.confirm(" + _datasource[i].codCidade + ");return false;'><span class='glyphicon glyphicon-trash'></span></a></div>";
+            cell3.innerHTML = "<a href='#' onClick='crtCidade.editAt(" + _datasource[i].CodCidade + ");return false;'><span class='glyphicon glyphicon-edit'></span></a></div>";
+            cell4.innerHTML = "<a href='#' onClick='crtCidade.confirm(" + _datasource[i].CodCidade + ");return false;'><span class='glyphicon glyphicon-trash'></span></a></div>";
         }
     }
 
@@ -145,7 +178,7 @@ var crtCidade = (function () {
         if (_validate.call(this)) {
             if (_idEdit !== 0) {
                 for (var i = 0; i < _datasource.length; i++) {
-                    if (_datasource[i].codCidade === _idEdit) {
+                    if (_datasource[i].CodCidade === _idEdit) {
                         _datasource[i].NomeCidade = _txtNome.value;
                         _datasource[i].Estado = "SP";
                        // _datasource[i].situacao = 'alterado';
@@ -154,7 +187,7 @@ var crtCidade = (function () {
             } else {
                 _id = _datasource.length + 1;
                 var _item = {
-                    codCidade: _id,
+                    CodCidade: _id,
                     NomeCidade: _txtNome.value,
                     Estado: "SP"
                     //situacao: "Novo"
@@ -181,7 +214,7 @@ var crtCidade = (function () {
 
     var _editAt = function (id) {
         for (var i = 0; i < _datasource.length; i++) {
-            if (_datasource[i].codCidade === id) {
+            if (_datasource[i].CodCidade === id) {
                 _txtNome.value = _datasource[i].NomeCidade;
                 _idEdit = id;
             }
@@ -190,11 +223,57 @@ var crtCidade = (function () {
         _resetValidation.call(this);
     }
 
-    function _load() {
-        _datasource = [{ codCidade: 1, NomeCidade: "Americana", Estado: "SP" },
-                       { codCidade: 2, NomeCidade: "Piracicaba", Estado: "SP" },
-                       { codCidade: 3, NomeCidade: "Sao Paulo", Estado: "SP" }
+    var _confirm = function (id) {
+        _idExcluir = id;
+        for (var i = 0; i < _datasource.length; i++) {
+            if (_datasource[i].CodCidade === id) {
+                ConfirmDelete.setMessage(_datasource[i].NomeCidade);
+            }
+        }
+        $("#mConfirm").modal('show');
+        _resetValidation.call(this);
+    }
+
+    var _removeAt = function () {
+        for (var i = 0; i < _datasource.length; i++) {
+            if (_datasource[i].CodCidade === _idExcluir) {
+                _datasource.splice(i, 1);
+            }
+        }
+        _idExcluir = 0;
+        _tableDataBind.call(this);
+        $("#mConfirm").modal('hide');
+        _resetValidation.call(this);
+    }
+
+    function _load_bk() {
+        _datasource = [{ CodCidade: 1, NomeCidade: "Americana", Estado: "SP" },
+                       { CodCidade: 2, NomeCidade: "Piracicaba", Estado: "SP" },
+                       { CodCidade: 3, NomeCidade: "Sao Paulo", Estado: "SP" }
         ];
+    }
+
+
+    function _load() {
+        $.ajax({
+            async: true,
+            cache: false,
+            url: "http://localhost:3412/cidades",
+            type: "GET",
+            //data: {
+            //    Estado: "SP"
+            //},
+            datatype: "JSON",
+            success: function (data, success) {
+                if (success = "success") {
+                    _datasource = data;
+                    _tableDataBind.call(this);
+                }
+            },
+            error: function () {
+                alert('Erro ao salvar filtro!');
+            }
+        });
     }
 
     var _list = function () {
@@ -206,6 +285,10 @@ var crtCidade = (function () {
         create: _create,
         newItem: _newItem,
         save: _save,
-        editAt: _editAt
+        editAt: _editAt,
+        confirm: _confirm,
+        removeAt: _removeAt,
+        params: _params,
+        getUrl: _getUrl
     }
 })();
