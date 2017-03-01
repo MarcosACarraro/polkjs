@@ -38,7 +38,6 @@ var createRouter = function (port) {
 
     var _getparameters = function (req) {
         var parameters = [];
-        var result = {};
         var stringParameters = {};
         var q = req.url.split('?');
         if (q.length >= 2) {

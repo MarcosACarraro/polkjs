@@ -10,30 +10,6 @@ var crtCidade = (function () {
     var _txtNome;
     var _ddlEstado;
 
-    var _params = function (req) {
-        var parameters = [];
-        var result = {};
-        var stringParameters = {};
-        var q = req.url.split('?');
-        if (q.length >= 2) {
-            stringParameters = q[1].split('&');
-            for (var i = 0; i < stringParameters.length; i++) {
-                itens = stringParameters[i].split('=');
-                var result = {};
-                result.parameter = itens[0];
-                result.value = itens[1];
-                parameters.push(result);
-            }
-        }
-        return parameters;
-    }
-
-    var _getUrl = function (req) {
-        var q = req.url.split('?');
-        return q[0];
-    }
-
-
     var _create = function () {
 
         _mainDiv = window.document.getElementById("mainContainer");
@@ -80,7 +56,7 @@ var crtCidade = (function () {
 
         _createEdit.call(this);
         ConfirmDelete.create("crtCidade.removeAt()");
-        
+
     }
 
     var _tableDataBind = function () {
@@ -90,8 +66,10 @@ var crtCidade = (function () {
             linha++;
             var row = _table.insertRow(linha);
             var cell0 = row.insertCell(0);
+            cell0.setAttribute("width", "30px");
             var cell1 = row.insertCell(1);
             var cell2 = row.insertCell(2);
+            cell2.setAttribute("width", "30px");
             var cell3 = row.insertCell(3);
             cell3.setAttribute("width", "30px");
             cell3.setAttribute("align", "center");
@@ -181,28 +159,49 @@ var crtCidade = (function () {
                     if (_datasource[i].CodCidade === _idEdit) {
                         _datasource[i].NomeCidade = _txtNome.value;
                         _datasource[i].Estado = "SP";
-                       // _datasource[i].situacao = 'alterado';
+                        // _datasource[i].situacao = 'alterado';
                     }
                 }
             } else {
-                _id = _datasource.length + 1;
+                //_id = 20;
                 var _item = {
-                    CodCidade: _id,
+                   // CodCidade: _id,
                     NomeCidade: _txtNome.value,
                     Estado: "SP"
                     //situacao: "Novo"
                 };
-                _datasource.push(_item);
+
+                 _sabeDB(_item);
+                //_datasource.push(_item);
             }
 
             _txtNome.value = "";
             _idEdit = 0;
 
+            _load();
             _tableDataBind.call(this);
             $("#EditModal").modal('hide');
         } else {
             $("#divAlertSave").show();
         }
+    }
+
+
+    function _sabeDB(item) {
+        $.ajax({
+            async: true,
+            cache: false,
+            url: "http://localhost:3412/cidades",
+            type: "POST",
+            data: JSON.stringify(item),
+            datatype: "JSON"
+            //success: function (response) {
+            //    alert(response);
+            //},
+            //error: function () {
+            //        alert('Erro ao salvar!');
+            //}
+        });
     }
 
     var _validate = function () {
@@ -287,8 +286,6 @@ var crtCidade = (function () {
         save: _save,
         editAt: _editAt,
         confirm: _confirm,
-        removeAt: _removeAt,
-        params: _params,
-        getUrl: _getUrl
+        removeAt: _removeAt
     }
 })();
