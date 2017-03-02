@@ -94,8 +94,9 @@ var crtCidade = (function () {
     }
 
     var _txtNomeValidade = function () {
-        var regEx = /^99$/;
-        if (regEx.test(_txtNome.value)) {
+        //var regEx = /^99$/;
+        //if (regEx.test(_txtNome.value)) {
+        if(_txtNome.value.length > 3){
             return _toggleValidade.call(this, _txtNome, true, "");
         } else {
             return _toggleValidade.call(this, _txtNome, false, "Erro na Cidade!!!");
@@ -155,24 +156,25 @@ var crtCidade = (function () {
     var _save = function () {
         if (_validate.call(this)) {
             if (_idEdit !== 0) {
-                for (var i = 0; i < _datasource.length; i++) {
-                    if (_datasource[i].CodCidade === _idEdit) {
-                        _datasource[i].NomeCidade = _txtNome.value;
-                        _datasource[i].Estado = "SP";
-                        // _datasource[i].situacao = 'alterado';
-                    }
-                }
-            } else {
-                //_id = 20;
                 var _item = {
-                   // CodCidade: _id,
+                    Update :"Update",
+                    CodCidade:_idEdit,
                     NomeCidade: _txtNome.value,
                     Estado: "SP"
-                    //situacao: "Novo"
                 };
-
+                _updateDB(_item);
+                //for (var i = 0; i < _datasource.length; i++) {
+                //    if (_datasource[i].CodCidade === _idEdit) {
+                //        _datasource[i].NomeCidade = _txtNome.value;
+                //        _datasource[i].Estado = "SP";
+                //    }
+                //}
+            } else {
+                var _item = {
+                    NomeCidade: _txtNome.value,
+                    Estado: "SP"
+                };
                  _sabeDB(_item);
-                //_datasource.push(_item);
             }
 
             _txtNome.value = "";
@@ -204,6 +206,18 @@ var crtCidade = (function () {
         });
     }
 
+    function _updateDB(item) {
+        $.ajax({
+            async: true,
+            cache: false,
+            url: "http://localhost:3412/cidades",
+            type: "GET",
+            data: JSON.stringify(item),
+            datatype: "JSON"
+        });
+    }
+    
+
     var _validate = function () {
         _formValid = 0;
         _formValid += _txtNomeValidade.call(this);
@@ -234,12 +248,15 @@ var crtCidade = (function () {
     }
 
     var _removeAt = function () {
-        for (var i = 0; i < _datasource.length; i++) {
-            if (_datasource[i].CodCidade === _idExcluir) {
-                _datasource.splice(i, 1);
-            }
-        }
+        _deleteDB(_idExcluir);
+        //for (var i = 0; i < _datasource.length; i++) {
+        //    if (_datasource[i].CodCidade === _idExcluir) {
+                
+        //        //_datasource.splice(i, 1);
+        //    }
+        //}
         _idExcluir = 0;
+        _load();
         _tableDataBind.call(this);
         $("#mConfirm").modal('hide');
         _resetValidation.call(this);
@@ -252,6 +269,27 @@ var crtCidade = (function () {
         ];
     }
 
+    function _deleteDB(id) {
+        $.ajax({
+            async: true,
+            cache: false,
+            url: "http://localhost:3412/cidades",
+            type: "GET",
+            data: {
+                Delete: id
+            },
+            datatype: "JSON"
+            //success: function (data, success) {
+            //    if (success = "success") {
+            //        alert('apagou');
+            //    }
+            //},
+            //error: function () {
+            //    alert('Erro ao Deletar!');
+            //}
+        });
+    }
+
 
     function _load() {
         $.ajax({
@@ -259,9 +297,9 @@ var crtCidade = (function () {
             cache: false,
             url: "http://localhost:3412/cidades",
             type: "GET",
-            //data: {
-            //    Estado: "SP"
-            //},
+            data: {
+                Select: "All"
+            },
             datatype: "JSON",
             success: function (data, success) {
                 if (success = "success") {
