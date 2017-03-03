@@ -1,0 +1,73 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title>Cidade</title>
+    <link href="style/menu.css" rel="stylesheet" />
+    <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="jquery-custom/jquery-ui.css" />
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+    <script src="jquery-custom/external/jquery/jquery.js"></script>
+    <script src="jquery-custom/jquery-ui.js"></script>
+    <script src="bootstrap/js/bootstrap.min.js"></script>
+    <script src="menu.js"></script>
+    <script src="lateral.js"></script>
+    <script src="ctrProfissao.js"></script>
+    <script src="confirm.js"></script>
+    <style>
+        .search {
+            background-image: url("searchicon.png");
+            background-position: 10px 4px;
+            background-repeat: no-repeat;
+            width: 100%;
+            font-size: 15px;
+            padding: 4px 20px 4px 42px;
+            border: 1px solid #ddd;
+            margin-bottom: 12px;
+        }
+        .no-margim {
+           margin: 38px 0 -15px!important;
+        }
+    </style>
+</head>
+<body>
+    
+    <div id="menuDiv"></div>
+    <div id="lateralDiv"></div>
+    <div id="ConfirmDelete"></div>
+
+    <div id="EditModal" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Cadastro</h4>
+                </div>
+                <div id="EditBody" class="modal-body">
+                    <div id="divNome">
+                        <label class="control-label" for="txtDescProfissao">Profissao</label>
+                        <input id="txtDescProfissao" type="text" name="txtDescProfissao" class="form-control" />
+                        <span class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span>
+                        <span id="hbProfissao" class="help-block">Profissao</span>
+                    </div>
+                </div>
+                 <div id="divAlertSave" class="alert alert-danger">
+                    <strong>Sinto Muito!</strong> Não foi possível salvar!! 
+                </div>
+                <div id="EditFooter" class="modal-footer">
+                    <button type="button" class="btn btn-primary" onclick="javascript:crtProfissao.save();">Salvar</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
+                </div>
+            </div>
+        </div>
+     </div>
+</body>
+</html>
+<script type="text/javascript">
+    menu.create();
+    lateral.create();
+    crtProfissao.create();
+</script>
+
+

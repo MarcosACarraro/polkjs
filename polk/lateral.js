@@ -85,8 +85,8 @@ var lateral = (function () {
         _menu3.setAttribute("data-toggle", "collapse");
         _menu3.setAttribute("data-target", "#toggleDemo0");
         _menu3.setAttribute("data-parent", "#sidenav01");
-        _menu3.setAttribute("href", "bairro.html");
-        _menu3.innerHTML = "<span class='glyphicon glyphicon-align-justify'></span>&nbsp;Bairro";
+        _menu3.setAttribute("href", "profissao.html");
+        _menu3.innerHTML = "<span class='glyphicon glyphicon-align-justify'></span>&nbsp;Profissao";
         _li3.appendChild(_menu3);
 
 

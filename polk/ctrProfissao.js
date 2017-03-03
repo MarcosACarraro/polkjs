@@ -1,4 +1,4 @@
-var crtCidade = (function () {
+var crtProfissao = (function () {
     var _mainDiv;
     var _id = 0;
     var _idEdit = 0;
@@ -7,8 +7,7 @@ var crtCidade = (function () {
     var _table = {};
     var _formValid = 0;
 
-    var _txtNome;
-    var _ddlEstado;
+    var _txtDescProfissao;
 
     var _create = function () {
 
@@ -16,9 +15,9 @@ var crtCidade = (function () {
 
         var _header = window.document.createElement("div");
         _header.setAttribute("class", "page-header no-margim");
-        _header.innerHTML = "<h3><span class='glyphicon glyphicon-th-list'></span>&nbsp;Cidades</h3>";
+        _header.innerHTML = "<h3><span class='glyphicon glyphicon-th-list'></span>&nbsp;Profissao</h3>";
         _mainDiv.appendChild(_header);
-        
+
         _txtBusca = window.document.createElement("input");
         _txtBusca.setAttribute("type", "text");
         _txtBusca.setAttribute("class", "search");
@@ -33,12 +32,10 @@ var crtCidade = (function () {
         var cell1 = row.insertCell(1);
         var cell2 = row.insertCell(2);
         var cell3 = row.insertCell(3);
-        var cell4 = row.insertCell(4);
         cell0.innerHTML = "codigo";
-        cell1.innerHTML = "Nome Cidade";
-        cell2.innerHTML = "Estado";
-        cell3.innerHTML = "Editar";
-        cell4.innerHTML = "Excluir"
+        cell1.innerHTML = "Profissao";
+        cell2.innerHTML = "Editar";
+        cell3.innerHTML = "Excluir"
         _mainDiv.appendChild(_table);
 
         var _divPanel = window.document.createElement("div");
@@ -53,14 +50,14 @@ var crtCidade = (function () {
         _btnNew.setAttribute("class", "btn btn-primary");
         _btnNew.innerHTML = "Novo";
         _btnNew.setAttribute("name", "btnNew");
-        _btnNew.setAttribute("onclick", "javascript:crtCidade.newItem();")
+        _btnNew.setAttribute("onclick", "javascript:crtProfissao.newItem();")
         _divBody.appendChild(_btnNew);
         _mainDiv.appendChild(_divBody);
 
         _load();
 
         _createEdit.call(this);
-        ConfirmDelete.create("crtCidade.removeAt()");
+        ConfirmDelete.create("crtProfissao.removeAt()");
 
     }
 
@@ -72,67 +69,64 @@ var crtCidade = (function () {
             var row = _table.insertRow(linha);
             var cell0 = row.insertCell(0);
             cell0.setAttribute("width", "30px");
+
             var cell1 = row.insertCell(1);
+
             var cell2 = row.insertCell(2);
             cell2.setAttribute("width", "30px");
+            cell2.setAttribute("align", "center");
             var cell3 = row.insertCell(3);
             cell3.setAttribute("width", "30px");
             cell3.setAttribute("align", "center");
-            var cell4 = row.insertCell(4);
-            cell4.setAttribute("width", "30px");
-            cell4.setAttribute("align", "center");
 
-            cell0.innerHTML = _datasource[i].CodCidade;
-            cell1.innerHTML = _datasource[i].NomeCidade;
-            cell2.innerHTML = _datasource[i].Estado;
-            cell3.innerHTML = "<a href='#' onClick='crtCidade.editAt(" + _datasource[i].CodCidade + ");return false;'><span class='glyphicon glyphicon-edit'></span></a></div>";
-            cell4.innerHTML = "<a href='#' onClick='crtCidade.confirm(" + _datasource[i].CodCidade + ");return false;'><span class='glyphicon glyphicon-trash'></span></a></div>";
+            cell0.innerHTML = _datasource[i].CodProfissao;
+            cell1.innerHTML = _datasource[i].DescProfissao;
+            cell2.innerHTML = "<a href='#' onClick='crtProfissao.editAt(" + _datasource[i].CodProfissao + ");return false;'><span class='glyphicon glyphicon-edit'></span></a></div>";
+            cell3.innerHTML = "<a href='#' onClick='crtProfissao.confirm(" + _datasource[i].CodProfissao + ");return false;'><span class='glyphicon glyphicon-trash'></span></a></div>";
         }
+    }
+
+    var _createEdit = function () {
+        _txtDescProfissao = window.document.getElementById("txtDescProfissao");
+        _txtDescProfissao.onchange = _txtDescProfissaoValidade;
+        _txtDescProfissao.onkeyup = _txtDescProfissaoValidade;
+        _txtDescProfissao.setAttribute("maxlength", "50");
+        _resetValidation.call(this);
     }
 
     var _onBuscar = function () {
         if (_txtBusca.value.length > 3) {
             _search(_txtBusca.value);
-        }else if (_txtBusca.value.length === 0) {
+        } else if (_txtBusca.value.length === 0) {
             _load();
         }
     }
 
+
     var _newItem = function () {
         _idEdit = 0;
-        _txtNome.value = "";
-        _ddlEstado.selectedIndex = 0;
+        _txtDescProfissao.value = "";
         $("#EditModal").modal('show');
         _resetValidation.call(this);
     }
 
     var _validate = function () {
         _formValid = 0;
-        _formValid += _txtNomeValidade.call(this);
-        _formValid += _ddlEstadoValidade.call(this);
+        _formValid += _txtDescProfissaoValidade.call(this);
         return (_formValid == 0);
     }
 
-    var _txtNomeValidade = function () {
-        if(_txtNome.value.length > 3){
-            return _toggleValidade.call(this, _txtNome, true, "");
+    var _txtDescProfissaoValidade = function () {
+        if (_txtDescProfissao.value.length > 3) {
+            return _toggleValidade.call(this, _txtDescProfissao, true, "");
         } else {
-            return _toggleValidade.call(this, _txtNome, false, "Erro na Cidade!!!");
-        }
-    }
-
-    var _ddlEstadoValidade = function () {
-        if (_ddlEstado.selectedIndex == 0) {
-            return _toggleValidade.call(this, _ddlEstado, false, "Selecione um Estado!!!");
-        } else {
-            return _toggleValidade.call(this, _ddlEstado, true, "");
+            return _toggleValidade.call(this, _txtDescProfissao, false, "Erro na Profissao!!!");
         }
     }
 
     var _resetValidation = function () {
-        _toggleValidade.call(this, _txtNome, true, "");
-        _toggleValidade.call(this, _ddlEstado, true, "");
-
+        _toggleValidade.call(this, _txtDescProfissao, true, "");
+   
         $("#divAlertSave").hide();
         _formValid = 0;
     }
@@ -151,17 +145,6 @@ var crtCidade = (function () {
         }
     }
 
-    var _createEdit = function () {
-        _txtNome = window.document.getElementById("txtNomeCidade");
-        _txtNome.onchange = _txtNomeValidade;
-        _txtNome.onkeyup = _txtNomeValidade;
-        _txtNome.setAttribute("maxlength", "50");
-
-        _ddlEstado = window.document.getElementById("ddlEstado");
-        _ddlEstado.onchange = _ddlEstadoValidade;
-        _resetValidation.call(this);
-    }
-
     var _limpar = function () {
         var tableHeaderRowCount = 1;
         var rowCount = _table.rows.length;
@@ -173,14 +156,13 @@ var crtCidade = (function () {
     var _save = function () {
         if (_validate.call(this)) {
             var _item = {
-                CodCidade: _idEdit,
-                NomeCidade: _txtNome.value,
-                Estado: _ddlEstado.options[_ddlEstado.selectedIndex].value
+                CodProfissao: _idEdit,
+                DescProfissao: _txtDescProfissao.value
             };
 
             _sabeDB(_item);
 
-            _txtNome.value = "";
+            _txtDescProfissao.value = "";
             _idEdit = 0;
             _load();
             $("#EditModal").modal('hide');
@@ -191,13 +173,8 @@ var crtCidade = (function () {
 
     var _editAt = function (id) {
         for (var i = 0; i < _datasource.length; i++) {
-            if (_datasource[i].CodCidade === id) {
-                _txtNome.value = _datasource[i].NomeCidade;
-                for (j = 0; j < _ddlEstado.length; j++) {
-                    if (_ddlEstado.options[j].value === _datasource[i].Estado) {
-                        _ddlEstado.selectedIndex = j;
-                    }
-                }
+            if (_datasource[i].CodProfissao === id) {
+                _txtDescProfissao.value = _datasource[i].DescProfissao;
                 _idEdit = id;
             }
         }
@@ -208,8 +185,8 @@ var crtCidade = (function () {
     var _confirm = function (id) {
         _idExcluir = id;
         for (var i = 0; i < _datasource.length; i++) {
-            if (_datasource[i].CodCidade === id) {
-                ConfirmDelete.setMessage(_datasource[i].NomeCidade);
+            if (_datasource[i].CodProfissao === id) {
+                ConfirmDelete.setMessage(_datasource[i].DescProfissao);
             }
         }
         $("#mConfirm").modal('show');
@@ -224,12 +201,11 @@ var crtCidade = (function () {
         _resetValidation.call(this);
     }
 
-
     function _sabeDB(item) {
         $.ajax({
             async: true,
             cache: false,
-            url: "http://localhost:3412/cidades",
+            url: "http://localhost:3412/profissao",
             type: "POST",
             data: JSON.stringify(item),
             datatype: "JSON",
@@ -246,7 +222,7 @@ var crtCidade = (function () {
         $.ajax({
             async: true,
             cache: false,
-            url: "http://localhost:3412/cidades",
+            url: "http://localhost:3412/profissao",
             type: "GET",
             data: {
                 Delete: id
@@ -265,7 +241,7 @@ var crtCidade = (function () {
         $.ajax({
             async: true,
             cache: false,
-            url: "http://localhost:3412/cidades",
+            url: "http://localhost:3412/profissao",
             type: "GET",
             data: {
                 Select: filter
@@ -283,12 +259,11 @@ var crtCidade = (function () {
         });
     }
 
-
     function _load() {
         $.ajax({
             async: true,
             cache: false,
-            url: "http://localhost:3412/cidades",
+            url: "http://localhost:3412/profissao",
             type: "GET",
             data: {
                 Select: "All"
@@ -306,19 +281,7 @@ var crtCidade = (function () {
         });
     }
 
-    function _load_bk() {
-        _datasource = [{ CodCidade: 1, NomeCidade: "Americana", Estado: "SP" },
-                       { CodCidade: 2, NomeCidade: "Piracicaba", Estado: "SP" },
-                       { CodCidade: 3, NomeCidade: "Sao Paulo", Estado: "SP" }
-        ];
-    }
-
-    var _list = function () {
-        return _load();
-    }
-
     return {
-        list: _list,
         create: _create,
         newItem: _newItem,
         save: _save,

@@ -11,15 +11,36 @@ var cidadeService = (function () {
              callback(rows)
          });
     }
-
-    var _insert = function (db, cidade,callback) {
-        var query = db.query('INSERT INTO Cidade SET ?', cidade, function (err, result) {
+    var _selectFiltro = function (db, filtro,callback) {
+        var queryString = 'SELECT * FROM Cidade WHERE NomeCidade LIKE ?';
+        var list = db.query(queryString, '%' + filtro + '%', function (err, rows, fields) {
             if (err) {
                 console.log(err);
                 throw err
             };
-            callback(result.insertId);
+            callback(rows)
         });
+    }
+
+    var _save = function (db, cidade, callback) {
+        if (cidade.CodCidade === 0) {
+            delete cidade.CodCidade;
+            var query = db.query('INSERT INTO Cidade SET ?', cidade, function (err, result) {
+                if (err) {
+                    console.log(err);
+                    throw err
+                };
+                callback(result);
+            });
+        } else {
+            var query = db.query('UPDATE  Cidade SET NomeCidade = ? ,Estado = ? WHERE CodCidade = ?', [cidade.NomeCidade, cidade.Estado,cidade.CodCidade], function (err, result) {
+                if (err) {
+                    console.log(err);
+                    throw err
+                };
+                callback(result);
+            });
+        }
     }
 
     var _delete = function (db, id, callback) {
@@ -32,22 +53,12 @@ var cidadeService = (function () {
         });
     }
 
-    var _update = function (db, id,Nome, callback) {
-        var query = db.query('UPDATE  Cidade SET NomeCidade = ? WHERE CodCidade = ?', [id, Nome], function (err, result) {
-            if (err) {
-                console.log(err);
-                throw err
-            };
-            callback();
-        });
-    }
-
     return {
+        selectFiltro:_selectFiltro,
         select: _select,
-        insert: _insert,
+        save: _save,
         delete: _delete,
-        update: _update
-    }
+     }
 })();
 
 module.exports = cidadeService;
