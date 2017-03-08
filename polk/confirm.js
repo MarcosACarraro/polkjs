@@ -1,12 +1,19 @@
-var ConfirmDelete = (function () {
+var ConfirmDelete = function () {
     // <div id="ConfirmDelete"></div> criar uma div na pagina;
     var _lblMensagem;
-    var _create = function (clickconfirm) {
+    var _lblName = "";
+    var _divContainer = "";
+    var _modalName = "";
+    var _function = "";
+    var _create = function (mainDiv,name) {
 
-        _mainDiv = window.document.getElementById("ConfirmDelete");
-        
+        _modalName = "Confirm" + name;
+        _function = "ctr" + name+ '.removeAt()';
+        _lblName = "lblMsg" + name;
+        _mainDiv = window.document.getElementById(mainDiv);
+
         _divConfirm = window.document.createElement("div");
-        _divConfirm.setAttribute("id", "mConfirm");
+        _divConfirm.setAttribute("id", _modalName);
         _divConfirm.setAttribute("class", "modal fade");
         _divConfirm.setAttribute("role", "dialog");
 
@@ -41,7 +48,7 @@ var ConfirmDelete = (function () {
         var _btnConfirm = window.document.createElement("button");
         _btnConfirm.setAttribute("type", "button");
         _btnConfirm.setAttribute("class", "btn btn-primary");
-        _btnConfirm.setAttribute("onclick", "javascript:" + clickconfirm + ";")
+        _btnConfirm.setAttribute("onclick", "javascript:" + _function + ";")
         _btnConfirm.innerHTML = "OK";
 
         _divFooter.appendChild(_btnClose);
@@ -56,7 +63,7 @@ var ConfirmDelete = (function () {
         _divContent.appendChild(_divEdit);
 
         _lblMensagem = window.document.createElement("label");
-        _lblMensagem.innerHTML = "";
+        _lblMensagem.setAttribute("id", _lblName);
         _divEdit.appendChild(_lblMensagem);
 
         _divContent.appendChild(_divFooter);
@@ -65,14 +72,24 @@ var ConfirmDelete = (function () {
 
         _mainDiv.appendChild(_divConfirm);
     }
-  
+
     var _setMessage = function (msg) {
-        _lblMensagem.innerHTML = msg;
+        $("#" + _lblName).text(msg);;
+    }
+
+    var _show = function () {
+        $("#" + _modalName).modal('show');
+    }
+
+    var _hide = function () {
+        $("#" + _modalName).modal('hide');
     }
 
     return {
         create: _create,
+        show: _show,
+        hide:_hide,
         setMessage: _setMessage
     }
 
-})();
+};

@@ -1,4 +1,4 @@
-var ctrProfissao = (function () {
+var ctrBairro = (function () {
     var _mainDiv;
     var _id = 0;
     var _idEdit = 0;
@@ -7,27 +7,26 @@ var ctrProfissao = (function () {
     var _table = {};
     var _formValid = 0;
 
-    var _txtDescProfissao;
+    var _txtNomeBairro;
+
+    var _confirmDeleteBairro = {};
 
     var _create = function () {
 
-        //_totalRecords();
-
-        _confirmDeleteProfissao = ConfirmDelete()
-        _confirmDeleteProfissao.create("mainContainer", "Profissao");
-
+        _confirmDeleteBairro = ConfirmDelete();
+        _confirmDeleteBairro.create("mainContainer", "Bairro");
         _mainDiv = window.document.getElementById("mainContainer");
 
         var _header = window.document.createElement("div");
         _header.setAttribute("class", "page-header no-margim");
-        _header.innerHTML = "<h3><span class='glyphicon glyphicon-th-list'></span>&nbsp;Profissao</h3>";
+        _header.innerHTML = "<h3><span class='glyphicon glyphicon-th-list'></span>&nbsp;Bairro</h3>";
         _mainDiv.appendChild(_header);
 
-        _txtBusca = window.document.createElement("input");
-        _txtBusca.setAttribute("type", "text");
-        _txtBusca.setAttribute("class", "search");
-        _txtBusca.onkeyup = _onBuscar;
-        _mainDiv.appendChild(_txtBusca);
+        _txtBuscaBairro = window.document.createElement("input");
+        _txtBuscaBairro.setAttribute("type", "text");
+        _txtBuscaBairro.setAttribute("class", "search");
+        _txtBuscaBairro.onkeyup = _onBuscar;
+        _mainDiv.appendChild(_txtBuscaBairro);
 
         _table = window.document.createElement("table");
         _table.setAttribute("class", "table table-striped table-hover table-responsive");
@@ -38,36 +37,10 @@ var ctrProfissao = (function () {
         var cell2 = row.insertCell(2);
         var cell3 = row.insertCell(3);
         cell0.innerHTML = "codigo";
-        cell1.innerHTML = "Profissao";
+        cell1.innerHTML = "Bairro";
         cell2.innerHTML = "Editar";
         cell3.innerHTML = "Excluir"
         _mainDiv.appendChild(_table);
-
-
-        var _pagination = window.document.createElement("ul");
-        _pagination.setAttribute("class", "pagination");
-        
-        var _li1 = window.document.createElement("li");
-        _li1.innerHTML = "<a href='#' onClick='javascript:alert(\"ok\");'>&laquo;</a>";
-        var _li2 = window.document.createElement("li");
-        _li2.innerHTML = "<a href='#'>2</a>";
-        _li2.setAttribute("class", "active");
-        var _li3 = window.document.createElement("li");
-        _li3.innerHTML = "<a href='#'>3</a>";
-        var _li4 = window.document.createElement("li");
-        _li4.innerHTML = "<a href='#'>4</a>";
-        var _li5 = window.document.createElement("li");
-        _li4.innerHTML = "<a href='#'>&raquo;</a>";
-
-                
-        _pagination.appendChild(_li1);
-        _pagination.appendChild(_li2);
-        _pagination.appendChild(_li3);
-        _pagination.appendChild(_li4);
-        _pagination.appendChild(_li5);
-
-        _mainDiv.appendChild(_pagination);
-
 
         var _divPanel = window.document.createElement("div");
         var _hr = window.document.createElement("hr");
@@ -81,14 +54,13 @@ var ctrProfissao = (function () {
         _btnNew.setAttribute("class", "btn btn-primary");
         _btnNew.innerHTML = "Novo";
         _btnNew.setAttribute("name", "btnNew");
-        _btnNew.setAttribute("onclick", "javascript:ctrProfissao.newItem();")
+        _btnNew.setAttribute("onclick", "javascript:ctrBairro.newItem();")
         _divBody.appendChild(_btnNew);
         _mainDiv.appendChild(_divBody);
 
         _load();
 
         _createEdit.call(this);
-      
 
     }
 
@@ -110,25 +82,25 @@ var ctrProfissao = (function () {
             cell3.setAttribute("width", "30px");
             cell3.setAttribute("align", "center");
 
-            cell0.innerHTML = _datasource[i].CodProfissao;
-            cell1.innerHTML = _datasource[i].DescProfissao;
-            cell2.innerHTML = "<a href='#' onClick='ctrProfissao.editAt(" + _datasource[i].CodProfissao + ");return false;'><span class='glyphicon glyphicon-edit'></span></a></div>";
-            cell3.innerHTML = "<a href='#' onClick='ctrProfissao.confirm(" + _datasource[i].CodProfissao + ");return false;'><span class='glyphicon glyphicon-trash'></span></a></div>";
+            cell0.innerHTML = _datasource[i].CodBairro;
+            cell1.innerHTML = _datasource[i].NomeBairro;
+            cell2.innerHTML = "<a href='#' onClick='ctrBairro.editAt(" + _datasource[i].CodBairro + ");return false;'><span class='glyphicon glyphicon-edit'></span></a></div>";
+            cell3.innerHTML = "<a href='#' onClick='ctrBairro.confirm(" + _datasource[i].CodBairro + ");return false;'><span class='glyphicon glyphicon-trash'></span></a></div>";
         }
     }
 
     var _createEdit = function () {
-        _txtDescProfissao = window.document.getElementById("txtDescProfissao");
-        _txtDescProfissao.onchange = _txtDescProfissaoValidade;
-        _txtDescProfissao.onkeyup = _txtDescProfissaoValidade;
-        _txtDescProfissao.setAttribute("maxlength", "50");
+        _txtNomeBairro = window.document.getElementById("txtNomeBairro");
+        _txtNomeBairro.onchange = _txtNomeBairroValidade;
+        _txtNomeBairro.onkeyup = _txtNomeBairroValidade;
+        _txtNomeBairro.setAttribute("maxlength", "50");
         _resetValidation.call(this);
     }
 
     var _onBuscar = function () {
-        if (_txtBusca.value.length > 3) {
-            _search(_txtBusca.value);
-        } else if (_txtBusca.value.length === 0) {
+        if (_txtBuscaBairro.value.length > 3) {
+            _search(_txtBuscaBairro.value);
+        } else if (_txtBuscaBairro.value.length === 0) {
             _load();
         }
     }
@@ -136,28 +108,28 @@ var ctrProfissao = (function () {
 
     var _newItem = function () {
         _idEdit = 0;
-        _txtDescProfissao.value = "";
-        $("#EditModal").modal('show');
+        _txtNomeBairro.value = "";
+        $("#EditModalBairro").modal('show');
         _resetValidation.call(this);
     }
 
     var _validate = function () {
         _formValid = 0;
-        _formValid += _txtDescProfissaoValidade.call(this);
+        _formValid += _txtNomeBairroValidade.call(this);
         return (_formValid == 0);
     }
 
-    var _txtDescProfissaoValidade = function () {
-        if (_txtDescProfissao.value.length > 3) {
-            return _toggleValidade.call(this, _txtDescProfissao, true, "");
+    var _txtNomeBairroValidade = function () {
+        if (_txtNomeBairro.value.length > 3) {
+            return _toggleValidade.call(this, _txtNomeBairro, true, "");
         } else {
-            return _toggleValidade.call(this, _txtDescProfissao, false, "Erro na Profissao!!!");
+            return _toggleValidade.call(this, _txtNomeBairro, false, "Erro na Descricao!!!");
         }
     }
 
     var _resetValidation = function () {
-        _toggleValidade.call(this, _txtDescProfissao, true, "");
-   
+        _toggleValidade.call(this, _txtNomeBairro, true, "");
+
         $("#divAlertSave").hide();
         _formValid = 0;
     }
@@ -187,16 +159,17 @@ var ctrProfissao = (function () {
     var _save = function () {
         if (_validate.call(this)) {
             var _item = {
-                CodProfissao: _idEdit,
-                DescProfissao: _txtDescProfissao.value
+                CodBairro: _idEdit,
+                NomeBairro: _txtNomeBairro.value,
+                CodCidade:7
             };
 
             _sabeDB(_item);
 
-            _txtDescProfissao.value = "";
+            _txtNomeBairro.value = "";
             _idEdit = 0;
             _load();
-            $("#EditModal").modal('hide');
+            $("#EditModalBairro").modal('hide');
         } else {
             $("#divAlertSave").show();
         }
@@ -204,23 +177,23 @@ var ctrProfissao = (function () {
 
     var _editAt = function (id) {
         for (var i = 0; i < _datasource.length; i++) {
-            if (_datasource[i].CodProfissao === id) {
-                _txtDescProfissao.value = _datasource[i].DescProfissao;
+            if (_datasource[i].CodBairro === id) {
+                _txtNomeBairro.value = _datasource[i].NomeBairro;
                 _idEdit = id;
             }
         }
-        $("#EditModal").modal('show');
+        $("#EditModalBairro").modal('show');
         _resetValidation.call(this);
     }
 
     var _confirm = function (id) {
         _idExcluir = id;
         for (var i = 0; i < _datasource.length; i++) {
-            if (_datasource[i].CodProfissao === id) {
-                _confirmDeleteProfissao.setMessage(_datasource[i].DescProfissao);
+            if (_datasource[i].CodBairro === id) {
+                _confirmDeleteBairro.setMessage(_datasource[i].NomeBairro);
             }
         }
-        _confirmDeleteProfissao.show();
+        _confirmDeleteBairro.show();
         _resetValidation.call(this);
     }
 
@@ -228,7 +201,7 @@ var ctrProfissao = (function () {
         _deleteDB(_idExcluir);
         _idExcluir = 0;
         _load();
-        _confirmDeleteProfissao.hide();
+        _confirmDeleteBairro.hide();
         _resetValidation.call(this);
     }
 
@@ -236,7 +209,7 @@ var ctrProfissao = (function () {
         $.ajax({
             async: true,
             cache: false,
-            url: "http://localhost:3412/profissao",
+            url: "http://localhost:3412/bairro",
             type: "POST",
             data: JSON.stringify(item),
             datatype: "JSON",
@@ -253,7 +226,7 @@ var ctrProfissao = (function () {
         $.ajax({
             async: true,
             cache: false,
-            url: "http://localhost:3412/profissao",
+            url: "http://localhost:3412/bairro",
             type: "GET",
             data: {
                 Delete: id
@@ -272,7 +245,7 @@ var ctrProfissao = (function () {
         $.ajax({
             async: true,
             cache: false,
-            url: "http://localhost:3412/profissao",
+            url: "http://localhost:3412/bairro",
             type: "GET",
             data: {
                 Select: filter
@@ -291,44 +264,19 @@ var ctrProfissao = (function () {
     }
 
     function _load() {
-        var _skip = 0;
-        var _take = 10;
         $.ajax({
             async: true,
             cache: false,
-            url: "http://localhost:3412/profissao",
+            url: "http://localhost:3412/bairro",
             type: "GET",
             data: {
-                Select: "All",
-                skip: _skip,
-                take: _take
+                Select: "All"
             },
             datatype: "JSON",
             success: function (data, success) {
                 if (success = "success") {
                     _datasource = data;
                     _tableDataBind.call(this);
-                }
-            },
-            error: function () {
-                alert('Erro carregar registros!');
-            }
-        });
-    }
-
-    function _totalRecords() {
-        $.ajax({
-            async: true,
-            cache: false,
-            url: "http://localhost:3412/profissao",
-            type: "GET",
-            data: {
-                Count: "Count"
-            },
-            datatype: "JSON",
-            success: function (data, success) {
-                if (success = "success") {
-                    alert(data[0].Total);
                 }
             },
             error: function () {

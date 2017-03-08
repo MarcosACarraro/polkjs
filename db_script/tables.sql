@@ -1,21 +1,24 @@
+use bd_Sistema;
+
+
 CREATE TABLE Profissao(
     CodProfissao INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
 	DescProfissao varchar(50) NULL
+);
+
+CREATE TABLE Cidade(
+	CodCidade INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+	NomeCidade varchar(50) NULL,
+	Estado varchar(2)
 );
 
 
 CREATE TABLE Bairro (
     CodBairro INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     NomeBairro VARCHAR(50) NULL,
-    CodCidade INT NULL
+    CodCidade INT(6) UNSIGNED NULL,
+    FOREIGN KEY (CodCidade) REFERENCES Cidade(CodCidade)
 );
-
-
-CREATE TABLE Cidade(
-	CodCidade INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-	NomeCidade varchar(50) NULL,
-	Estado varchar(2)
- );
 
 CREATE TABLE Cliente (
     CodCliente INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,

@@ -1,8 +1,9 @@
 var profissaoService = (function () {
     var _inserted = 0;
 
-    var _select = function (db, callback) {
-        var queryString = 'SELECT * FROM Profissao';
+
+    var _totalRecords = function (db, callback) {
+        var queryString = 'SELECT COUNT(*) AS Total FROM Profissao';
         var list = db.query(queryString, function (err, rows, fields) {
             if (err) {
                 console.log(err);
@@ -11,8 +12,20 @@ var profissaoService = (function () {
             callback(rows)
         });
     }
+
+    var _select = function (db, skip, take,callback) {
+        var queryString = "SELECT * FROM Profissao limit "+ skip + ","+ take;
+        var list = db.query(queryString, function (err, rows, fields) {
+            //console.log(list.sql);
+            if (err) {
+                console.log(err);
+                throw err
+            };
+            callback(rows)
+        });
+    }
     var _selectFiltro = function (db, filtro, callback) {
-        var queryString = 'SELECT * FROM Profissao WHERE DescProfissao LIKE ?';
+        var queryString = "SELECT * FROM Profissao WHERE DescProfissao LIKE ? limit 10";
         var list = db.query(queryString, '%' + filtro + '%', function (err, rows, fields) {
             if (err) {
                 console.log(err);
@@ -58,6 +71,7 @@ var profissaoService = (function () {
         select: _select,
         save: _save,
         delete: _delete,
+        totalRecords:_totalRecords
     }
 })();
 
