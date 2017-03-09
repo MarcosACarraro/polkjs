@@ -1,0 +1,44 @@
+var control = (function(){
+
+     var _load = function(){
+          var indexPage= 20;
+          var pages = 30;
+          var maxpages =5;
+          var limitPages = (pages < maxpages)?pages:maxpages;
+          limitPages = limitPages+indexPage;
+          limitPages  =(limitPages>pages)?pages:limitPages;
+          var ul = window.document.createElement("ul");
+          for(i=indexPage; i < limitPages; i++) {
+              var li = window.document.createElement("li");
+              li.innerHTML = i;
+              ul.appendChild(li);
+          }
+          var div = document.getElementById("main");
+          div.appendChild(ul);
+     }
+     
+    return{
+     load:_load
+    }
+    
+})();
+
+
+//var _li1 = window.document.createElement("li");
+        //_li1.innerHTML = "<a href='#' onClick='javascript:alert(\"ok\");'>&laquo;</a>";
+        //var _li2 = window.document.createElement("li");
+        //_li2.innerHTML = "<a href='#'>2</a>";
+        //_li2.setAttribute("class", "active");
+        //var _li3 = window.document.createElement("li");
+        //_li3.innerHTML = "<a href='#'>3</a>";
+        //var _li4 = window.document.createElement("li");
+        //_li4.innerHTML = "<a href='#'>4</a>";
+        //var _li5 = window.document.createElement("li");
+        //_li4.innerHTML = "<a href='#'>&raquo;</a>";
+
+
+        //_pagination.appendChild(_li1);
+        //_pagination.appendChild(_li2);
+        //_pagination.appendChild(_li3);
+        //_pagination.appendChild(_li4);
+        //_pagination.appendChild(_li5);

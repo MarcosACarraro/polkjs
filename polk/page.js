@@ -51,21 +51,19 @@ app.post('/cidades', function (req, res) {
 });
 
 app.get('/profissao', function (req, res) {
-    if (req.parameters[0].parameter === "Select" && req.parameters[0].value === "All") {
-        var _skip = req.parameters[1].value;
-        var _take = req.parameters[2].value;
-        profissaoService.select(db,_skip, _take,function (rows) {
+    if (req.parameters[0].parameter === "Select") {
+
+        var filtro = {
+            descProfissao: req.parameters[0].value,
+            skip: req.parameters[1].value,
+            take: req.parameters[2].value,
+        };
+
+        profissaoService.select(db, filtro, function (rows) {
+            //console.log(rows);
             res.write(JSON.stringify(rows));
             res.end();
         });
-    } else {
-        if (req.parameters[0].parameter === "Select") {
-            var filtro = req.parameters[0].value;
-            profissaoService.selectFiltro(db, filtro, function (rows) {
-                res.write(JSON.stringify(rows));
-                res.end();
-            });
-        }
     }
     if (req.parameters[0].parameter === "Delete") {
         var id = req.parameters[0].value;
@@ -73,13 +71,13 @@ app.get('/profissao', function (req, res) {
             res.end('{"success" : "success", "status" : 200}');
         });
     }
-    if (req.parameters[0].parameter === "Count") {
-        profissaoService.totalRecords(db, function (rows) {
-            //console.log(rows);
-            res.write(JSON.stringify(rows));
-            res.end();
-        });
-    }
+    //if (req.parameters[0].parameter === "Count") {
+    //    profissaoService.totalRecords(db, function (rows) {
+    //        //console.log(rows);
+    //        res.write(JSON.stringify(rows));
+    //        res.end();
+    //    });
+    //}
 });
 
 app.post('/profissao', function (req, res) {

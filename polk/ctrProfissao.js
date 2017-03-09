@@ -6,12 +6,12 @@ var ctrProfissao = (function () {
     var _datasource = [];
     var _table = {};
     var _formValid = 0;
+    var _skip = 0;
+    var _take = 3;
 
     var _txtDescProfissao;
 
     var _create = function () {
-
-        //_totalRecords();
 
         _confirmDeleteProfissao = ConfirmDelete()
         _confirmDeleteProfissao.create("mainContainer", "Profissao");
@@ -44,48 +44,25 @@ var ctrProfissao = (function () {
         _mainDiv.appendChild(_table);
 
 
-        var _pagination = window.document.createElement("ul");
-        _pagination.setAttribute("class", "pagination");
-        
-        var _li1 = window.document.createElement("li");
-        _li1.innerHTML = "<a href='#' onClick='javascript:alert(\"ok\");'>&laquo;</a>";
-        var _li2 = window.document.createElement("li");
-        _li2.innerHTML = "<a href='#'>2</a>";
-        _li2.setAttribute("class", "active");
-        var _li3 = window.document.createElement("li");
-        _li3.innerHTML = "<a href='#'>3</a>";
-        var _li4 = window.document.createElement("li");
-        _li4.innerHTML = "<a href='#'>4</a>";
-        var _li5 = window.document.createElement("li");
-        _li4.innerHTML = "<a href='#'>&raquo;</a>";
+       // var _divPanel = window.document.createElement("div");
+        //var _hr = window.document.createElement("hr");
+        //_divPanel.appendChild(_hr);
+        //_mainDiv.appendChild(_divPanel);
 
-                
-        _pagination.appendChild(_li1);
-        _pagination.appendChild(_li2);
-        _pagination.appendChild(_li3);
-        _pagination.appendChild(_li4);
-        _pagination.appendChild(_li5);
+        //var _divBody = window.document.createElement("div");
+        //_divBody.setAttribute("class", "pull-right");
 
-        _mainDiv.appendChild(_pagination);
+        //var _btnNew = window.document.createElement("button");
+        //_btnNew.setAttribute("class", "btn btn-primary");
+        //_btnNew.innerHTML = "Novo";
+        //_btnNew.setAttribute("name", "btnNew");
+        //_btnNew.setAttribute("onclick", "javascript:ctrProfissao.newItem();")
+        //_divBody.appendChild(_btnNew);
+        //_mainDiv.appendChild(_divBody);
 
-
-        var _divPanel = window.document.createElement("div");
-        var _hr = window.document.createElement("hr");
-        _divPanel.appendChild(_hr);
-        _mainDiv.appendChild(_divPanel);
-
-        var _divBody = window.document.createElement("div");
-        _divBody.setAttribute("class", "pull-right");
-
-        var _btnNew = window.document.createElement("button");
-        _btnNew.setAttribute("class", "btn btn-primary");
-        _btnNew.innerHTML = "Novo";
-        _btnNew.setAttribute("name", "btnNew");
-        _btnNew.setAttribute("onclick", "javascript:ctrProfissao.newItem();")
-        _divBody.appendChild(_btnNew);
-        _mainDiv.appendChild(_divBody);
-
-        _load();
+       
+        _search("");
+      
 
         _createEdit.call(this);
       
@@ -129,7 +106,8 @@ var ctrProfissao = (function () {
         if (_txtBusca.value.length > 3) {
             _search(_txtBusca.value);
         } else if (_txtBusca.value.length === 0) {
-            _load();
+            _search("");
+            //_load();
         }
     }
 
@@ -195,7 +173,8 @@ var ctrProfissao = (function () {
 
             _txtDescProfissao.value = "";
             _idEdit = 0;
-            _load();
+            //_load();
+            _search("");
             $("#EditModal").modal('hide');
         } else {
             $("#divAlertSave").show();
@@ -227,7 +206,8 @@ var ctrProfissao = (function () {
     var _removeAt = function () {
         _deleteDB(_idExcluir);
         _idExcluir = 0;
-        _load();
+        //_load();
+        _search("");
         _confirmDeleteProfissao.hide();
         _resetValidation.call(this);
     }
@@ -268,38 +248,16 @@ var ctrProfissao = (function () {
         });
     }
 
-    function _search(filter) {
+    function _search(descProfissao) {
+        //var _skip = 0;
+        //var _take = 10;
         $.ajax({
             async: true,
             cache: false,
             url: "http://localhost:3412/profissao",
             type: "GET",
             data: {
-                Select: filter
-            },
-            datatype: "JSON",
-            success: function (data, success) {
-                if (success = "success") {
-                    _datasource = data;
-                    _tableDataBind.call(this);
-                }
-            },
-            error: function () {
-                alert('Erro carregar registros!');
-            }
-        });
-    }
-
-    function _load() {
-        var _skip = 0;
-        var _take = 10;
-        $.ajax({
-            async: true,
-            cache: false,
-            url: "http://localhost:3412/profissao",
-            type: "GET",
-            data: {
-                Select: "All",
+                Select: descProfissao,
                 skip: _skip,
                 take: _take
             },
@@ -314,21 +272,61 @@ var ctrProfissao = (function () {
                 alert('Erro carregar registros!');
             }
         });
+
+        _searchTotalRecords(descProfissao, _paginacao);
+
     }
 
-    function _totalRecords() {
+    function _paginacao(total) {
+
+        var totalPages = Math.ceil(total / _take);
+        //var totalPages = 12;
+
+        if (totalPages > 1) {
+            var indexPage = 1;
+            var maxButtons = 10;
+
+            var limitButtons = (totalPages < maxButtons) ? totalPages : maxButtons;
+            limitButtons = limitButtons + indexPage;
+            limitButtons = (limitButtons > totalPages) ? totalPages : limitButtons;
+
+            var _pagination = window.document.createElement("ul");
+            _pagination.setAttribute("class", "pagination");
+
+            for (i = indexPage; i <= limitButtons; i++) {
+                var li = window.document.createElement("li");
+                if (i === indexPage) {
+                    li.innerHTML = "<a href='#'>&laquo;</a>"
+                } else if (i === (limitButtons)) {
+                    li.innerHTML = "<a href='#'>&raquo;</a>";
+                } else {
+                    li.innerHTML = "<a href='#'>"+i+"</a>";
+                }
+                _pagination.appendChild(li);
+            }
+        }
+        
+
+        _mainDiv.appendChild(_pagination);
+    }
+
+    function _searchTotalRecords(descProfissao, callback) {
+        var _skip = 0;
+        var _take = 0;
         $.ajax({
             async: true,
             cache: false,
             url: "http://localhost:3412/profissao",
             type: "GET",
             data: {
-                Count: "Count"
+                Select: descProfissao,
+                skip: _skip,
+                take: _take
             },
             datatype: "JSON",
             success: function (data, success) {
                 if (success = "success") {
-                    alert(data[0].Total);
+                    callback(data[0].Total);
                 }
             },
             error: function () {
@@ -337,12 +335,20 @@ var ctrProfissao = (function () {
         });
     }
 
+    var _SetPage = function (index) {
+        _skip = ((index - 1) * _take);
+        _search(_txtBusca.value);
+        
+    }
+
+
     return {
         create: _create,
         newItem: _newItem,
         save: _save,
         editAt: _editAt,
         confirm: _confirm,
-        removeAt: _removeAt
+        removeAt: _removeAt,
+        SetPage: _SetPage
     }
 })();
