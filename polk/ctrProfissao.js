@@ -6,29 +6,80 @@ var ctrProfissao = (function () {
     var _datasource = [];
     var _table = {};
     var _formValid = 0;
+    var _pagination = {};
     var _skip = 0;
-    var _take = 3;
+    var _take = 8;
+    var _indexPage = 1;
+    var _divleft = {};
+    var _divRight = {};
+    var _mainDiv = {};
+    var _divFilterBody = {};
 
     var _txtDescProfissao;
 
     var _create = function () {
+        createMaintContainer();
+        createFilter();
+        createTable();
+        createEdit();
+        createBottom();
 
-        _confirmDeleteProfissao = ConfirmDelete()
+        _confirmDeleteProfissao = ConfirmDelete();
         _confirmDeleteProfissao.create("mainContainer", "Profissao");
+    }
 
-        _mainDiv = window.document.getElementById("mainContainer");
+    function createMaintContainer() {
 
-        var _header = window.document.createElement("div");
-        _header.setAttribute("class", "page-header no-margim");
-        _header.innerHTML = "<h3><span class='glyphicon glyphicon-th-list'></span>&nbsp;Profissao</h3>";
-        _mainDiv.appendChild(_header);
+        var _mainContent = window.document.getElementById("divMainContent");
 
+        var _divFilter = window.document.createElement("div");
+        _divFilter.setAttribute("class", "panel panel-default");
+        _mainContent.appendChild(_divFilter);
+
+        var _divFilterHeader = window.document.createElement("div");
+        _divFilterHeader.setAttribute("class", "panel-heading");
+        _divFilter.appendChild(_divFilterHeader);
+
+        var _filterHeaderTitle = window.document.createElement("h3");
+        _filterHeaderTitle.setAttribute("class", "panel-title");
+        _filterHeaderTitle.innerHTML = "<span class='glyphicon glyphicon-th-list'></span><span>&nbsp;Profissao</span>";
+        _divFilterHeader.appendChild(_filterHeaderTitle);
+
+        var _iconFilter = window.document.createElement("span");
+        _iconFilter.setAttribute("id", "iconFilter");
+        _iconFilter.setAttribute("onclick", "javascript:lateral.toggle();")
+        _iconFilter.setAttribute("class", "pull-right clickable");
+        _iconFilter.innerHTML = "<i class='glyphicon glyphicon-chevron-up'>";
+        _divFilterHeader.appendChild(_iconFilter);
+
+        var _divFilterBodyCollapse = window.document.createElement("div");
+        _divFilterBodyCollapse.setAttribute("id", "divFilterBodyCollapse");
+        _divFilterBodyCollapse.setAttribute("class", "panel-collapse collapse in");
+        _divFilter.appendChild(_divFilterBodyCollapse);
+
+        _divFilterBody = window.document.createElement("div");
+        _divFilterBody.setAttribute("id", "bodyFilter");
+        _divFilterBody.setAttribute("class", "panel-body");
+        _divFilterBodyCollapse.appendChild(_divFilterBody);
+
+        _mainDiv = window.document.createElement("div");
+        _mainDiv.setAttribute("class", "container");
+        _mainDiv.setAttribute("id", "mainContainer");
+        _divFilter.appendChild(_mainDiv);
+
+    }
+
+    function createFilter() {
+        /*filtro vai no Filter body*/
         _txtBusca = window.document.createElement("input");
         _txtBusca.setAttribute("type", "text");
         _txtBusca.setAttribute("class", "search");
         _txtBusca.onkeyup = _onBuscar;
-        _mainDiv.appendChild(_txtBusca);
+        _divFilterBody.appendChild(_txtBusca);
+    }
 
+    function createTable() {
+        /*table vai na div principal*/
         _table = window.document.createElement("table");
         _table.setAttribute("class", "table table-striped table-hover table-responsive");
 
@@ -43,30 +94,37 @@ var ctrProfissao = (function () {
         cell3.innerHTML = "Excluir"
         _mainDiv.appendChild(_table);
 
-
-       // var _divPanel = window.document.createElement("div");
-        //var _hr = window.document.createElement("hr");
-        //_divPanel.appendChild(_hr);
-        //_mainDiv.appendChild(_divPanel);
-
-        //var _divBody = window.document.createElement("div");
-        //_divBody.setAttribute("class", "pull-right");
-
-        //var _btnNew = window.document.createElement("button");
-        //_btnNew.setAttribute("class", "btn btn-primary");
-        //_btnNew.innerHTML = "Novo";
-        //_btnNew.setAttribute("name", "btnNew");
-        //_btnNew.setAttribute("onclick", "javascript:ctrProfissao.newItem();")
-        //_divBody.appendChild(_btnNew);
-        //_mainDiv.appendChild(_divBody);
-
-       
         _search("");
-      
+    }
 
-        _createEdit.call(this);
-      
+    function createEdit() {
+        _txtDescProfissao = window.document.getElementById("txtDescProfissao");
+        _txtDescProfissao.onchange = _txtDescProfissaoValidade;
+        _txtDescProfissao.onkeyup = _txtDescProfissaoValidade;
+        _txtDescProfissao.setAttribute("maxlength", "50");
+        _resetValidation.call(this);
+    }
 
+    function createBottom() {
+
+        var _divBottom = window.document.createElement("div");
+
+        _divleft = window.document.createElement("div");
+        _divleft.setAttribute("class", "pull-left");
+
+        _divRight = window.document.createElement("div");
+        _divRight.setAttribute("class", "pull-right");
+
+        _divBottom.appendChild(_divleft);
+        _divBottom.appendChild(_divRight);
+
+        var _btnNew = window.document.createElement("button");
+        _btnNew.setAttribute("class", "btn btn-primary");
+        _btnNew.innerHTML = "Novo";
+        _btnNew.setAttribute("name", "btnNew");
+        _btnNew.setAttribute("onclick", "javascript:ctrProfissao.newItem();")
+        _divRight.appendChild(_btnNew);
+        _mainDiv.appendChild(_divBottom);
     }
 
     var _tableDataBind = function () {
@@ -94,23 +152,15 @@ var ctrProfissao = (function () {
         }
     }
 
-    var _createEdit = function () {
-        _txtDescProfissao = window.document.getElementById("txtDescProfissao");
-        _txtDescProfissao.onchange = _txtDescProfissaoValidade;
-        _txtDescProfissao.onkeyup = _txtDescProfissaoValidade;
-        _txtDescProfissao.setAttribute("maxlength", "50");
-        _resetValidation.call(this);
-    }
-
     var _onBuscar = function () {
+        _skip = 0;
+        _indexPage = 1;
         if (_txtBusca.value.length > 3) {
             _search(_txtBusca.value);
         } else if (_txtBusca.value.length === 0) {
             _search("");
-            //_load();
         }
     }
-
 
     var _newItem = function () {
         _idEdit = 0;
@@ -173,8 +223,11 @@ var ctrProfissao = (function () {
 
             _txtDescProfissao.value = "";
             _idEdit = 0;
-            //_load();
-            _search("");
+
+            _skip = 0;
+            _indexPage = 1;
+
+            _search(_txtBusca.value);
             $("#EditModal").modal('hide');
         } else {
             $("#divAlertSave").show();
@@ -206,8 +259,11 @@ var ctrProfissao = (function () {
     var _removeAt = function () {
         _deleteDB(_idExcluir);
         _idExcluir = 0;
-        //_load();
-        _search("");
+        
+        _skip = 0;
+        _indexPage = 1;
+
+        _search(_txtBusca.value);
         _confirmDeleteProfissao.hide();
         _resetValidation.call(this);
     }
@@ -249,8 +305,6 @@ var ctrProfissao = (function () {
     }
 
     function _search(descProfissao) {
-        //var _skip = 0;
-        //var _take = 10;
         $.ajax({
             async: true,
             cache: false,
@@ -280,34 +334,54 @@ var ctrProfissao = (function () {
     function _paginacao(total) {
 
         var totalPages = Math.ceil(total / _take);
-        //var totalPages = 12;
+        
+         _pagination = window.document.getElementById("ulProfissao");
+         if (_pagination) _pagination.remove();
+
 
         if (totalPages > 1) {
-            var indexPage = 1;
-            var maxButtons = 10;
+            var limitButtons = 5;
+            var lastButton = 0;
+            var start = 1;
+        
+            lastButton = (totalPages < limitButtons) ? totalPages : limitButtons;
 
-            var limitButtons = (totalPages < maxButtons) ? totalPages : maxButtons;
-            limitButtons = limitButtons + indexPage;
-            limitButtons = (limitButtons > totalPages) ? totalPages : limitButtons;
-
-            var _pagination = window.document.createElement("ul");
+            if (_indexPage > limitButtons) {
+                start = (_indexPage - limitButtons + 1);
+                lastButton = (start + limitButtons - 1);
+            }
+          
+            _pagination = window.document.createElement("ul");
+            _pagination.setAttribute("id","ulProfissao")
             _pagination.setAttribute("class", "pagination");
 
-            for (i = indexPage; i <= limitButtons; i++) {
+            if (_indexPage > limitButtons) {
                 var li = window.document.createElement("li");
-                if (i === indexPage) {
-                    li.innerHTML = "<a href='#'>&laquo;</a>"
-                } else if (i === (limitButtons)) {
-                    li.innerHTML = "<a href='#'>&raquo;</a>";
-                } else {
-                    li.innerHTML = "<a href='#'>"+i+"</a>";
+                li.innerHTML = "<a href='#' onClick='ctrProfissao.SetPage(" + (_indexPage - 1) + ");return false;'>&laquo;</a>";
+                _pagination.appendChild(li);
+            }
+
+            for (i = start; i <= lastButton; i++) {
+                var li = window.document.createElement("li");
+                li.innerHTML = "<a href='#' onClick='ctrProfissao.SetPage(" + i + ");return false;'>" + i + "</a>";
+
+                if (i === _indexPage) {
+                    li.setAttribute("class", "active");
                 }
                 _pagination.appendChild(li);
             }
-        }
-        
+          
+            if (totalPages > lastButton) {
+                if (_indexPage < totalPages) {
+                    var li = window.document.createElement("li");
+                    li.innerHTML = "<a href='#' onClick='ctrProfissao.SetPage(" + (_indexPage + 1) + ");return false;'>&raquo;</a>";
+                    _pagination.appendChild(li);
+                }
+            }
 
-        _mainDiv.appendChild(_pagination);
+            _divleft.appendChild(_pagination);
+        }
+       
     }
 
     function _searchTotalRecords(descProfissao, callback) {
@@ -337,10 +411,9 @@ var ctrProfissao = (function () {
 
     var _SetPage = function (index) {
         _skip = ((index - 1) * _take);
+        _indexPage = index;
         _search(_txtBusca.value);
-        
     }
-
 
     return {
         create: _create,

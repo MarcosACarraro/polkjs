@@ -1,4 +1,5 @@
 var lateral = (function () {
+    var _toShow = false;
 
     var _create = function () {
         var _divRow = window.document.getElementById("lateralDiv");
@@ -91,17 +92,28 @@ var lateral = (function () {
 
 
         var _content = window.document.createElement("div");
+        _content.setAttribute("id", "divMainContent");
         _content.setAttribute("class", "col-sm-9 col-md-10 affix-content");
-        _divRow.appendChild(_content)
-
-        var _container = window.document.createElement("div");
-        _container.setAttribute("class", "container");
-        _container.setAttribute("id", "mainContainer");
-        _content.appendChild(_container)
+        _divRow.appendChild(_content);
 
     }
 
+    var _toggle = function () {
+
+        if (_toShow) {
+            $("#divFilterBodyCollapse").collapse('show');
+            $("#iconFilter").find('i').removeClass('glyphicon-chevron-down').addClass('glyphicon-chevron-up');
+            _toShow = false;
+        }
+        else {
+            $("#divFilterBodyCollapse").collapse('hide');
+            $("#iconFilter").find('i').removeClass('glyphicon-chevron-up').addClass('glyphicon-chevron-down');
+            _toShow = true;
+        }
+    }
+
     return {
-        create:_create
+        create: _create,
+        toggle:_toggle
     }
 })();
