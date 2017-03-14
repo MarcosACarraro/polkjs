@@ -14,6 +14,9 @@ var ctrProfissao = (function () {
     var _divRight = {};
     var _mainDiv = {};
     var _divFilterBody = {};
+    var _divFilter = {};
+    var _divBottom = {};
+    var _toShow = true;
 
     var _txtDescProfissao;
 
@@ -32,9 +35,14 @@ var ctrProfissao = (function () {
 
         var _mainContent = window.document.getElementById("divMainContent");
 
-        var _divFilter = window.document.createElement("div");
+        var _gridPainel = window.document.createElement("div");
+        _gridPainel.setAttribute("id", "gridPainel");
+        _gridPainel.setAttribute("class", "panel-collapse collapse in");
+        _mainContent.appendChild(_gridPainel);
+
+         _divFilter = window.document.createElement("div");
         _divFilter.setAttribute("class", "panel panel-default");
-        _mainContent.appendChild(_divFilter);
+        _gridPainel.appendChild(_divFilter);
 
         var _divFilterHeader = window.document.createElement("div");
         _divFilterHeader.setAttribute("class", "panel-heading");
@@ -47,14 +55,14 @@ var ctrProfissao = (function () {
 
         var _iconFilter = window.document.createElement("span");
         _iconFilter.setAttribute("id", "iconFilter");
-        _iconFilter.setAttribute("onclick", "javascript:lateral.toggle();")
+        _iconFilter.setAttribute("onclick", "javascript:ctrProfissao.toggleFilter();")
         _iconFilter.setAttribute("class", "pull-right clickable");
-        _iconFilter.innerHTML = "<i class='glyphicon glyphicon-chevron-up'>";
+        _iconFilter.innerHTML = "Filtrar &nbsp;<i class='glyphicon glyphicon-filter'>";
         _divFilterHeader.appendChild(_iconFilter);
 
         var _divFilterBodyCollapse = window.document.createElement("div");
         _divFilterBodyCollapse.setAttribute("id", "divFilterBodyCollapse");
-        _divFilterBodyCollapse.setAttribute("class", "panel-collapse collapse in");
+        _divFilterBodyCollapse.setAttribute("class", "panel-collapse collapse");
         _divFilter.appendChild(_divFilterBodyCollapse);
 
         _divFilterBody = window.document.createElement("div");
@@ -66,6 +74,16 @@ var ctrProfissao = (function () {
         _mainDiv.setAttribute("class", "container");
         _mainDiv.setAttribute("id", "mainContainer");
         _divFilter.appendChild(_mainDiv);
+
+        var _editPainel = window.document.createElement("div");
+        _editPainel.setAttribute("id", "editPainel");
+        _editPainel.setAttribute("class", "panel-collapse collapse in");
+        _mainContent.appendChild(_editPainel);
+
+        var _editForm = window.document.getElementById("editForm");
+        _editPainel.appendChild(_editForm);
+        
+
 
     }
 
@@ -103,28 +121,32 @@ var ctrProfissao = (function () {
         _txtDescProfissao.onkeyup = _txtDescProfissaoValidade;
         _txtDescProfissao.setAttribute("maxlength", "50");
         _resetValidation.call(this);
+
+        $("#gridPainel").collapse('show');
+        $("#editPainel").collapse('hide');
+
     }
 
     function createBottom() {
 
-        var _divBottom = window.document.createElement("div");
+        _divBottom = window.document.createElement("div");
+        _divBottom.setAttribute("class", "panel-footer");
 
         _divleft = window.document.createElement("div");
-        _divleft.setAttribute("class", "pull-left");
-
-        _divRight = window.document.createElement("div");
-        _divRight.setAttribute("class", "pull-right");
-
-        _divBottom.appendChild(_divleft);
-        _divBottom.appendChild(_divRight);
 
         var _btnNew = window.document.createElement("button");
-        _btnNew.setAttribute("class", "btn btn-primary");
+        _btnNew.setAttribute("class", "btn btn-primary pull-right");
         _btnNew.innerHTML = "Novo";
         _btnNew.setAttribute("name", "btnNew");
         _btnNew.setAttribute("onclick", "javascript:ctrProfissao.newItem();")
-        _divRight.appendChild(_btnNew);
-        _mainDiv.appendChild(_divBottom);
+
+        var _clear = window.document.createElement("div");
+        _clear.setAttribute("class", "clearfix");
+
+        _divBottom.appendChild(_divleft);
+        _divBottom.appendChild(_btnNew);
+        _divBottom.appendChild(_clear);
+        _divFilter.appendChild(_divBottom);
     }
 
     var _tableDataBind = function () {
@@ -165,7 +187,8 @@ var ctrProfissao = (function () {
     var _newItem = function () {
         _idEdit = 0;
         _txtDescProfissao.value = "";
-        $("#EditModal").modal('show');
+        $("#gridPainel").collapse('hide');
+        $("#editPainel").collapse('show');
         _resetValidation.call(this);
     }
 
@@ -228,7 +251,9 @@ var ctrProfissao = (function () {
             _indexPage = 1;
 
             _search(_txtBusca.value);
-            $("#EditModal").modal('hide');
+            $("#gridPainel").collapse('show');
+            $("#editPainel").collapse('hide');
+
         } else {
             $("#divAlertSave").show();
         }
@@ -241,7 +266,8 @@ var ctrProfissao = (function () {
                 _idEdit = id;
             }
         }
-        $("#EditModal").modal('show');
+        $("#gridPainel").collapse('hide');
+        $("#editPainel").collapse('show');
         _resetValidation.call(this);
     }
 
@@ -378,7 +404,6 @@ var ctrProfissao = (function () {
                     _pagination.appendChild(li);
                 }
             }
-
             _divleft.appendChild(_pagination);
         }
        
@@ -415,6 +440,28 @@ var ctrProfissao = (function () {
         _search(_txtBusca.value);
     }
 
+    var _editClose = function () {
+        _idEdit = 0;
+        _txtDescProfissao.value = "";
+        $("#gridPainel").collapse('show');
+        $("#editPainel").collapse('hide');
+    }
+
+    var _toggleFilter = function () {
+
+        if (_toShow) {
+            $("#divFilterBodyCollapse").collapse('show');
+            $("#iconFilter").find('i').removeClass('glyphicon-filter').addClass('glyphicon-chevron-up');
+            _toShow = false;
+        }
+        else {
+            $("#divFilterBodyCollapse").collapse('hide');
+            $("#iconFilter").find('i').removeClass('glyphicon-chevron-up').addClass('glyphicon-filter');
+            _toShow = true;
+        }
+    }
+
+
     return {
         create: _create,
         newItem: _newItem,
@@ -422,6 +469,8 @@ var ctrProfissao = (function () {
         editAt: _editAt,
         confirm: _confirm,
         removeAt: _removeAt,
-        SetPage: _SetPage
+        SetPage: _SetPage,
+        editClose: _editClose,
+        toggleFilter: _toggleFilter
     }
 })();

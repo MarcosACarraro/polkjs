@@ -1,6 +1,0 @@
-"lblmsgBairro",
-"lblmsgCidade",
-
-lblName,
-
-divConfirmCidade", "ConfirmCidade", "ctrCidade.removeAt()
