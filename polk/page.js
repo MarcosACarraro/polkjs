@@ -3,6 +3,9 @@ var cidadeService = require('./cidadeService');
 var profissaoService = require('./profissaoService');
 var bairroService = require('./bairroService');
 var connection = require('./connection');
+
+var fs = require('fs');
+
 var db = connection.db;
 db.connect();
 
@@ -119,6 +122,21 @@ app.get('/bairro', function (req, res) {
     }
 });
 
+
+app.get('/login', function (req, res) {
+
+    fs.readFile('Login.html', function (err, html) {
+        if (err) {
+            throw err;
+        } else {
+            res.writeHeader(200, { "Content-Type": "text/html" });
+            res.write(html);
+            res.end();
+        }
+    });
+
+    
+});
 
 
 //db.end();
