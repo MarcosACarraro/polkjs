@@ -62,10 +62,24 @@ var ctrLogin = (function () {
     var _logar = function () {
         _resetValidation.call(this);
         if (_validate.call(this)) {
-            alert('logou');
+            //alert('logou');
+
+            var _usuario = {
+                usuario: _txtUsuario.value,
+                senha: _txtSenha.value
+            };
+
+            _logarDB(_usuario);
+
         } else {
             $("#divAlertSave").show();
         }
+    }
+
+    function _logarDB(item) {
+        //var token = "XHFHTBVGWQFIKNYHFYGVBCFDSGFHJHGHVFCBJUTG";
+        storageDB.insert(item.usuario);
+        window.location = "Profissao.html";
     }
 
     return {

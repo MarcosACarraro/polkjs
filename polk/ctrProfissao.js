@@ -21,7 +21,8 @@ var ctrProfissao = (function () {
     var _txtDescProfissao;
 
     var _create = function () {
-        createMaintContainer();
+        loginVerify();
+        createMainContainer();
         createFilter();
         createTable();
         createEdit();
@@ -31,7 +32,14 @@ var ctrProfissao = (function () {
         _confirmDeleteProfissao.create("mainContainer", "Profissao");
     }
 
-    function createMaintContainer() {
+    function loginVerify() {
+        var login = storageDB.read();
+        if (!login) {
+            window.location = "login.html";
+        }
+    }
+
+    function createMainContainer() {
 
         var _mainContent = window.document.getElementById("divMainContent");
 
@@ -82,8 +90,6 @@ var ctrProfissao = (function () {
 
         var _editForm = window.document.getElementById("editForm");
         _editPainel.appendChild(_editForm);
-        
-
 
     }
 

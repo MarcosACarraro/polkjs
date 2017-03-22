@@ -11,9 +11,10 @@
     <script src="jquery-custom/jquery-ui.js"></script>
     <script src="bootstrap/js/bootstrap.min.js"></script>
     <script src="ctrLogin.js"></script>
+    <script src="storageDB.js"></script>
     <style>
         body {
-            background: url('login2.jpg') no-repeat center center fixed;
+            background: url('background.jpg') no-repeat center center fixed;
             -webkit-background-size: cover;
             -moz-background-size: cover;
             -o-background-size: cover;
@@ -71,22 +72,26 @@
                 border-top-left-radius: 0;
                 border-top-right-radius: 0;
             }
+
         .submit {
-            margin-top:20px;
+            margin-top: 20px;
         }
+
         #divAlertSave {
-            margin-top:20px;
+            margin-top: 20px;
         }
+
         .toppolk {
-             opacity: 0.4;
+            opacity: 0.4;
         }
+
         .title {
-              position: absolute;
-              top: 12px;
-              color:white!important;
-              font-size:18px;
-              left:12px;
-              font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+            position: absolute;
+            top: 12px;
+            color: white!important;
+            font-size: 18px;
+            left: 12px;
+            font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
         }
     </style>
 </head>
@@ -110,13 +115,13 @@
             </div>
             <div class="input-group">
                 <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
-                <input type="password" class="form-control"  id="txtSenha"name="txtSenha" placeholder="Senha" required="" />
+                <input type="password" class="form-control" id="txtSenha" name="txtSenha" placeholder="Senha" required="" />
             </div>
-         
-            <button class="btn btn-lg btn-primary btn-block submit" type="submit"onclick="javascript:ctrLogin.logar();" >Login</button>
-                <div id="divAlertSave" class="alert alert-danger">
-                    <strong>Sinto Muito!</strong> Não foi possível Logar!! 
-                </div>
+
+            <button class="btn btn-lg btn-primary btn-block submit" type="button" onclick="javascript:ctrLogin.logar();">Login</button>
+            <div id="divAlertSave" class="alert alert-danger">
+                <strong>Sinto Muito!</strong> Não foi possível Logar!! 
+            </div>
         </form>
     </div>
 </body>
