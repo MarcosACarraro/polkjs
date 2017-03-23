@@ -22,21 +22,22 @@ app.interceptor(function (req, res, next) {
     next();
 });
 
-app.get('/cidades', function (req, res) {
-    if (req.parameters[0].parameter === "Select" && req.parameters[0].value === "All") {
-        cidadeService.select(db, function (rows) {
+app.get('/cidade', function (req, res) {
+
+    if (req.parameters[0].parameter === "Select") {
+
+        var filtro = {
+            descCidade: req.parameters[0].value,
+            skip: req.parameters[1].value,
+            take: req.parameters[2].value,
+        };
+
+        cidadeService.select(db, filtro, function (rows) {
             res.write(JSON.stringify(rows));
             res.end();
         });
-    } else {
-        if (req.parameters[0].parameter === "Select") {
-            var filtro = req.parameters[0].value;
-            cidadeService.selectFiltro(db, filtro, function (rows) {
-                res.write(JSON.stringify(rows));
-                res.end();
-            });
-        }
     }
+   
     if (req.parameters[0].parameter === "Delete") {
         var id = req.parameters[0].value;
         cidadeService.delete(db, id, function (rows) {
@@ -45,7 +46,7 @@ app.get('/cidades', function (req, res) {
     }
 });
 
-app.post('/cidades', function (req, res) {
+app.post('/cidade', function (req, res) {
     var body = req.body;
     var cidade = JSON.parse(body);
     cidadeService.save(db, cidade, function (result) {
@@ -63,7 +64,6 @@ app.get('/profissao', function (req, res) {
         };
 
         profissaoService.select(db, filtro, function (rows) {
-            //console.log(rows);
             res.write(JSON.stringify(rows));
             res.end();
         });
@@ -74,13 +74,6 @@ app.get('/profissao', function (req, res) {
             res.end('{"success" : "success", "status" : 200}');
         });
     }
-    //if (req.parameters[0].parameter === "Count") {
-    //    profissaoService.totalRecords(db, function (rows) {
-    //        //console.log(rows);
-    //        res.write(JSON.stringify(rows));
-    //        res.end();
-    //    });
-    //}
 });
 
 app.post('/profissao', function (req, res) {

@@ -1,18 +1,5 @@
 var profissaoService = (function () {
     var _inserted = 0;
-
-
-    var _totalRecords = function (db, callback) {
-        var queryString = 'SELECT COUNT(*) AS Total FROM Profissao';
-        var list = db.query(queryString, function (err, rows, fields) {
-            if (err) {
-                console.log(err);
-                throw err
-            };
-            callback(rows)
-        });
-    }
-
     var _select = function (db, filtro, callback) {
         var queryString = "";
         if (filtro.skip == 0 && filtro.take == 0) {
@@ -64,8 +51,7 @@ var profissaoService = (function () {
     return {
         select: _select,
         save: _save,
-        delete: _delete,
-        totalRecords:_totalRecords
+        delete: _delete
     }
 })();
 

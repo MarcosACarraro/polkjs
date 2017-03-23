@@ -1,19 +1,25 @@
 var cidadeService = (function () {
     var _inserted = 0;
 
-    var _select = function (db,callback) {
-         var queryString = 'SELECT * FROM Cidade';
-         var list = db.query(queryString, function (err, rows, fields) {
-             if (err) {
-                 console.log(err);
-                 throw err
-             };
-             callback(rows)
-         });
+    var _totalRecords = function (db, callback) {
+        var queryString = 'SELECT COUNT(*) AS Total FROM Cidade';
+        var list = db.query(queryString, function (err, rows, fields) {
+            if (err) {
+                console.log(err);
+                throw err
+            };
+            callback(rows)
+        });
     }
-    var _selectFiltro = function (db, filtro,callback) {
-        var queryString = 'SELECT * FROM Cidade WHERE NomeCidade LIKE ?';
-        var list = db.query(queryString, '%' + filtro + '%', function (err, rows, fields) {
+
+    var _select = function (db, filtro, callback) {
+        var queryString = "";
+        if (filtro.skip == 0 && filtro.take == 0) {
+            queryString = 'SELECT COUNT(*) AS Total FROM Cidade WHERE NomeCidade LIKE ?';
+        } else {
+            queryString = "SELECT * FROM Cidade WHERE NomeCidade LIKE ? limit " + filtro.skip + "," + filtro.take;
+        }
+        var list = db.query(queryString, '%' + filtro.descCidade + '%', function (err, rows, fields) {
             if (err) {
                 console.log(err);
                 throw err
@@ -54,10 +60,10 @@ var cidadeService = (function () {
     }
 
     return {
-        selectFiltro:_selectFiltro,
         select: _select,
         save: _save,
         delete: _delete,
+        totalRecords: _totalRecords
      }
 })();
 
