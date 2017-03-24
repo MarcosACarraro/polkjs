@@ -93,20 +93,34 @@ app.post('/bairro', function (req, res) {
 });
 
 app.get('/bairro', function (req, res) {
-    if (req.parameters[0].parameter === "Select" && req.parameters[0].value === "All") {
-        bairroService.select(db, function (rows) {
+
+    if (req.parameters[0].parameter === "Select") {
+
+        var filtro = {
+            CodCidade: req.parameters[0].value
+        };
+
+        
+        bairroService.select(db, filtro, function (rows) {
             res.write(JSON.stringify(rows));
             res.end();
         });
-    } else {
-        if (req.parameters[0].parameter === "Select") {
-            var filtro = req.parameters[0].value;
-            bairroService.selectFiltro(db, filtro, function (rows) {
-                res.write(JSON.stringify(rows));
-                res.end();
-            });
-        }
     }
+
+    //if (req.parameters[0].parameter === "Select" && req.parameters[0].value === "All") {
+    //    bairroService.select(db, function (rows) {
+    //        res.write(JSON.stringify(rows));
+    //        res.end();
+    //    });
+    //} else {
+    //    if (req.parameters[0].parameter === "Select") {
+    //        var filtro = req.parameters[0].value;
+    //        bairroService.selectFiltro(db, filtro, function (rows) {
+    //            res.write(JSON.stringify(rows));
+    //            res.end();
+    //        });
+    //    }
+    //}
     if (req.parameters[0].parameter === "Delete") {
         var id = req.parameters[0].value;
         bairroService.delete(db, id, function (rows) {

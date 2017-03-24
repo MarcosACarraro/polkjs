@@ -16,6 +16,7 @@
     <script src="menu.js"></script>
     <script src="lateral.js"></script>
     <script src="ctrCidade.js"></script>
+    <script src="ctrBairro.js"></script>
     <script src="confirm.js"></script>
 </head>
 <body>
@@ -78,23 +79,42 @@
             </div>
         </div>
     </div>
-     <div id="editBairro">
+    <div id="editBairro">
         <div class="panel panel-primary">
             <div class="panel-heading">
                 <span class='glyphicon glyphicon-th-list'></span><span>&nbsp;Cadatro Bairro</span>
             </div>
             <div class="panel-body">
-                <div id="divEditBairro">
-                    <label class="control-label" >Bairro</label>
+                                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h1 class="panel-title"> <label id="lblCidade" class="control-label"></label></h1>
+                    </div>
+                    <div class="panel-body">
+                          <div id="divCollapseBairro" class="panel-collapse collapse" id="painel">
+                        <div class="panel-body">
+                             <label class="control-label" for="txtBairro">Bairro</label>
+                            
+                            <div class="input-group">
+                                <input id="txtNomeBairro" type="text" class="form-control" />
+                                <span class="input-group-btn">
+                                     <button type="button" class="btn btn-primary pull-right"" onclick="javascript:ctrBairro.save();">Salvar</button>
+                                     <!--<span class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span>
+                                     <span id="spanBairro" class="help-block">Nome do Bairro</span>-->
+                                </span>
+                                
+                            </div>
+                        </div>
+                    </div>
+                         <div id="divTableBairro"></div>
+                    </div>
                 </div>
             </div>
             <div class="panel-footer">
                 <button type="button" class="btn btn-default" onclick="javascript:ctrCidade.editBairroClose();">Fechar</button>
-                <!--<button type="button" class="btn btn-primary" onclick="javascript:ctrProfissao.save();">Salvar</button>-->
+                <button type="button" class="btn btn-primary pull-right" onclick="javascript:ctrBairro.NewBairro();">Novo</button>
             </div>
         </div>
     </div>
-    
 </body>
 </html>
 <script type="text/javascript">

@@ -8,7 +8,6 @@ var profissaoService = (function () {
             queryString = "SELECT * FROM Profissao WHERE DescProfissao LIKE ? limit " + filtro.skip + "," + filtro.take;
         }
         var list = db.query(queryString, '%' + filtro.descProfissao + '%', function (err, rows, fields) {
-            //console.log(list.sql);
             if (err) {
                 console.log(err);
                 throw err

@@ -1,19 +1,9 @@
 var bairroService = (function () {
     var _inserted = 0;
 
-    var _select = function (db, callback) {
-        var queryString = 'SELECT * FROM Bairro';
-        var list = db.query(queryString, function (err, rows, fields) {
-            if (err) {
-                console.log(err);
-                throw err
-            };
-            callback(rows)
-        });
-    }
-    var _selectFiltro = function (db, filtro, callback) {
-        var queryString = 'SELECT * FROM Bairro WHERE NomeBairro LIKE ?';
-        var list = db.query(queryString, '%' + filtro + '%', function (err, rows, fields) {
+    var _select = function (db, filtro,callback) {
+        var queryString = 'SELECT * FROM Bairro WHERE CodCidade = ?';
+        var list = db.query(queryString, [filtro.CodCidade], function (err, rows, fields) {
             if (err) {
                 console.log(err);
                 throw err
@@ -34,7 +24,6 @@ var bairroService = (function () {
             });
         } else {
             var query = db.query('UPDATE  Bairro SET NomeBairro = ?, CodCidade = ?  WHERE CodBairro = ?', [bairro.NomeBairro, bairro.CodCidade,bairro.CodBairro], function (err, result) {
-                //console.log(bairro.CodCidade);
                 if (err) {
                     console.log(err);
                     throw err
@@ -55,7 +44,6 @@ var bairroService = (function () {
     }
 
     return {
-        selectFiltro: _selectFiltro,
         select: _select,
         save: _save,
         delete: _delete,

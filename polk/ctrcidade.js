@@ -287,6 +287,14 @@ var ctrCidade = (function () {
     }
 
     var _editBairroAt = function (id) {
+        var _lblCidade = window.document.getElementById("lblCidade");
+
+        for (var i = 0; i < _datasource.length; i++) {
+            if (_datasource[i].CodCidade === id) {
+                _lblCidade.innerHTML = "Cidade:&nbsp;" + _datasource[i].NomeCidade + "-" + _datasource[i].Estado;
+                ctrBairro.create(id);
+            }
+        }
         $("#gridPainel").collapse('hide');
         $("#editPainelBairro").collapse('show');
     }
