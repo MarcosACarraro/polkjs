@@ -3,9 +3,14 @@ var ctrBairro = (function () {
     var _idCidade = 0;
     var _datasource = [];
     var _txtNomeBairro = {};
-
+    var _confirmDeleteBairro = {};
 
     var _create = function (id) {
+
+        _confirmDeleteBairro = ConfirmDelete();
+        _confirmDeleteBairro.create("editBairro", "Bairro");
+
+
         _idCidade = id;
         createTable();
         createEdit();
@@ -16,7 +21,7 @@ var ctrBairro = (function () {
         _txtNomeBairro.onchange = _txtNomeBairroValidade;
         _txtNomeBairro.onkeyup = _txtNomeBairroValidade;
         _txtNomeBairro.setAttribute("maxlength", "50");
-        $("#divCollapseBairro").collapse('hide');
+        _resetValidation.call(this);
     }
 
     function createTable() {
@@ -35,9 +40,11 @@ var ctrBairro = (function () {
         var cell0 = row.insertCell(0);
         var cell1 = row.insertCell(1);
         var cell2 = row.insertCell(2);
+        var cell3 = row.insertCell(3);
         cell0.innerHTML = "codigo";
         cell1.innerHTML = "Nome Bairro";
-        cell2.innerHTML = "Excluir";
+        cell2.innerHTML = "Editar";
+        cell3.innerHTML = "Excluir";
         _divTableBairro.appendChild(_table);
 
         _load();
@@ -60,9 +67,14 @@ var ctrBairro = (function () {
             cell2.setAttribute("width", "30px");
             cell2.setAttribute("align", "center");
 
+            var cell3 = row.insertCell(3);
+            cell3.setAttribute("width", "30px");
+            cell3.setAttribute("align", "center");
+
             cell0.innerHTML = _datasource[i].CodBairro;
             cell1.innerHTML = _datasource[i].NomeBairro;
-            cell2.innerHTML = "<a href='#' onClick='ctrBairro.confirm(" + _datasource[i].CodBairro + ");return false;'><span class='glyphicon glyphicon-trash'></span></a></div>";
+            cell2.innerHTML = "<a href='#' onClick='ctrBairro.editAt(" + _datasource[i].CodBairro + ");return false;'><span class='glyphicon glyphicon-edit'></span></a></div>";
+            cell3.innerHTML = "<a href='#' onClick='ctrBairro.confirm(" + _datasource[i].CodBairro + ");return false;'><span class='glyphicon glyphicon-trash'></span></a></div>";
         }
     }
 
@@ -78,7 +90,28 @@ var ctrBairro = (function () {
     var _NewBairro = function () {
         _idEdit = 0;
         _txtNomeBairro.value = "";
-        $("#divCollapseBairro").collapse('show');
+        $("#editCollapseBairro").collapse('hide');
+        $("#editCollapseItemBairro").collapse('show');
+        $("#btnNewBairro").hide();
+    }
+
+    var _editClose = function () {
+        $("#editCollapseBairro").collapse('show');
+        $("#editCollapseItemBairro").collapse('hide');
+        $("#btnNewBairro").show();
+    }
+
+    var _editAt = function (id) {
+        for (var i = 0; i < _datasource.length; i++) {
+            if (_datasource[i].CodBairro === id) {
+                _txtNomeBairro.value = _datasource[i].NomeBairro;
+                _idEdit = id;
+            }
+        }
+        $("#editCollapseBairro").collapse('hide');
+        $("#editCollapseItemBairro").collapse('show');
+        $("#btnNewBairro").hide();
+        _resetValidation.call(this);
     }
 
     var _validate = function () {
@@ -98,7 +131,7 @@ var ctrBairro = (function () {
     var _resetValidation = function () {
         _toggleValidade.call(this, _txtNomeBairro, true, "");
 
-        //$("#divAlertSave").hide();
+        $("#divAlertaBairro").hide();
         _formValid = 0;
     }
 
@@ -106,15 +139,34 @@ var ctrBairro = (function () {
         var _div = $(input).parent();
         if (valid) {
             $(_div).removeClass("form-group has-error has-feedback");
-            //$(_div).find("span").hide();
+            $(_div).find("span").hide();
             return 0;
         } else {
             $(_div).addClass("form-group has-error has-feedback");
-            //$(_div).find("span").show();
-            //$(_div).find("span")[1].innerHTML = message;
+            $(_div).find("span").show();
+            $(_div).find("span")[1].innerHTML = message;
             return 1;
         }
     }
+
+    var _confirm = function (id) {
+        _idExcluir = id;
+        for (var i = 0; i < _datasource.length; i++) {
+            if (_datasource[i].CodBairro === id) {
+                _confirmDeleteBairro.setMessage(_datasource[i].NomeBairro);
+            }
+        }
+        _confirmDeleteBairro.show();
+        _resetValidation.call(this);
+    }
+    var _removeAt = function () {
+        _deleteDB(_idExcluir);
+        _idExcluir = 0;
+        _load();
+        _confirmDeleteBairro.hide();
+        _resetValidation.call(this);
+    }
+
 
     var _save = function () {
         if (_validate.call(this)) {
@@ -129,11 +181,14 @@ var ctrBairro = (function () {
             _txtNomeBairro.value = "";
             _idEdit = 0;
             _load();
-            $("#divCollapseBairro").collapse('hide');
+
+            $("#editCollapseBairro").collapse('show');
+            $("#editCollapseItemBairro").collapse('hide');
+            $("#btnNewBairro").show();
         }
-        //} else {
-        //    $("#divAlertSave").show();
-        //}
+         else {
+            $("#divAlertaBairro").show();
+        }
     }
 
     function _load() {
@@ -175,9 +230,33 @@ var ctrBairro = (function () {
         });
     }
 
+    function _deleteDB(id) {
+        $.ajax({
+            async: true,
+            cache: false,
+            url: "http://localhost:3412/bairro",
+            type: "GET",
+            data: {
+                Delete: id
+            },
+            datatype: "JSON",
+            success: function (response) {
+                //alert(response.success);
+            },
+            error: function () {
+                alert('Erro ao Deletar!');
+            }
+        });
+    }
+  
+
     return {
         create: _create,
         save:_save,
-        NewBairro: _NewBairro
+        NewBairro: _NewBairro,
+        editAt: _editAt,
+        editClose: _editClose,
+        confirm: _confirm,
+        removeAt: _removeAt
     }
 })();

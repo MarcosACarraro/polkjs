@@ -8,7 +8,7 @@ var ctrProfissao = (function () {
     var _formValid = 0;
     var _pagination = {};
     var _skip = 0;
-    var _take = 8;
+    var _take = 10;
     var _indexPage = 1;
     var _divleft = {};
     var _divRight = {};
@@ -79,7 +79,7 @@ var ctrProfissao = (function () {
         _divFilterBodyCollapse.appendChild(_divFilterBody);
 
         _mainDiv = window.document.createElement("div");
-        _mainDiv.setAttribute("class", "container");
+        _mainDiv.setAttribute("class", "container panel-table");
         _mainDiv.setAttribute("id", "mainContainer");
         _divFilter.appendChild(_mainDiv);
 

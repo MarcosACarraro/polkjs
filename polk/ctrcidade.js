@@ -92,9 +92,9 @@ var ctrCidade = (function () {
         _editPainelBairro.setAttribute("class", "panel-collapse collapse in");
         _mainContent.appendChild(_editPainelBairro);
 
-
         var _editBairro = window.document.getElementById("editBairro");
         _editPainelBairro.appendChild(_editBairro);
+
 
     }
 
