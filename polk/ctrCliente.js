@@ -1,4 +1,4 @@
-var ctrProfissao = (function () {
+var ctrCliente = (function () {
     var _mainDiv;
     var _id = 0;
     var _idEdit = 0;
@@ -18,25 +18,22 @@ var ctrProfissao = (function () {
     var _divBottom = {};
     var _toShow = true;
 
-    var _txtDescProfissao;
+    var _txtNomeCliente = {};
+    var _txtEndereco = {};
+    var _txtBairro = {};
+    var _txtCEP = {};
 
     var _create = function () {
-        loginVerify();
+
+        //loginVerify();
         createMainContainer();
         createFilter();
         createTable();
         createEdit();
         createBottom();
 
-        _confirmDeleteProfissao = ConfirmDelete();
-        _confirmDeleteProfissao.create("mainContainer", "Profissao");
-    }
-
-    function loginVerify() {
-        var login = storageDB.read();
-        if (!login) {
-            window.location = "login.html";
-        }
+        _confirmDeleteCliente = ConfirmDelete();
+        _confirmDeleteCliente.create("mainContainer", "Cliente");
     }
 
     function createMainContainer() {
@@ -48,7 +45,7 @@ var ctrProfissao = (function () {
         _gridPainel.setAttribute("class", "panel-collapse collapse in");
         _mainContent.appendChild(_gridPainel);
 
-         _divFilter = window.document.createElement("div");
+        _divFilter = window.document.createElement("div");
         _divFilter.setAttribute("class", "panel panel-default");
         _gridPainel.appendChild(_divFilter);
 
@@ -58,12 +55,12 @@ var ctrProfissao = (function () {
 
         var _filterHeaderTitle = window.document.createElement("h3");
         _filterHeaderTitle.setAttribute("class", "panel-title");
-        _filterHeaderTitle.innerHTML = "<span class='glyphicon glyphicon-th-list'></span><span>&nbsp;Profissao</span>";
+        _filterHeaderTitle.innerHTML = "<span class='glyphicon glyphicon-th-list'></span><span>&nbsp;Cliente</span>";
         _divFilterHeader.appendChild(_filterHeaderTitle);
 
         var _iconFilter = window.document.createElement("span");
         _iconFilter.setAttribute("id", "iconFilter");
-        _iconFilter.setAttribute("onclick", "javascript:ctrProfissao.toggleFilter();")
+        _iconFilter.setAttribute("onclick", "javascript:ctrCliente.toggleFilter();")
         _iconFilter.setAttribute("class", "pull-right clickable");
         _iconFilter.innerHTML = "Filtrar &nbsp;<i class='glyphicon glyphicon-filter'>";
         _divFilterHeader.appendChild(_iconFilter);
@@ -90,7 +87,6 @@ var ctrProfissao = (function () {
 
         var _editForm = window.document.getElementById("editForm");
         _editPainel.appendChild(_editForm);
-
     }
 
     function createFilter() {
@@ -113,7 +109,7 @@ var ctrProfissao = (function () {
         var cell2 = row.insertCell(2);
         var cell3 = row.insertCell(3);
         cell0.innerHTML = "codigo";
-        cell1.innerHTML = "Profissao";
+        cell1.innerHTML = "Cliente";
         cell2.innerHTML = "Editar";
         cell3.innerHTML = "Excluir"
         _mainDiv.appendChild(_table);
@@ -122,10 +118,17 @@ var ctrProfissao = (function () {
     }
 
     function createEdit() {
-        _txtDescProfissao = window.document.getElementById("txtDescProfissao");
-        _txtDescProfissao.onchange = _txtDescProfissaoValidade;
-        _txtDescProfissao.onkeyup = _txtDescProfissaoValidade;
-        _txtDescProfissao.setAttribute("maxlength", "50");
+        _txtNomeCliente = window.document.getElementById("txtNomeCliente");
+        _txtNomeCliente.onchange = _txtNomeClienteValidade;
+        _txtNomeCliente.onkeyup = _txtNomeClienteValidade;
+        _txtNomeCliente.setAttribute("maxlength", "50");
+
+        _txtEndereco = window.document.getElementById("txtEndereco");
+        _txtCEP = window.document.getElementById("txtCEP");
+
+        //_txtBairro = window.document.getElementById("txtBairro");
+
+
         _resetValidation.call(this);
 
         $("#gridPainel").collapse('show');
@@ -143,7 +146,7 @@ var ctrProfissao = (function () {
         _btnNew.setAttribute("class", "btn btn-primary pull-right");
         _btnNew.innerHTML = "Novo";
         _btnNew.setAttribute("name", "btnNew");
-        _btnNew.setAttribute("onclick", "javascript:ctrProfissao.newItem();")
+        _btnNew.setAttribute("onclick", "javascript:ctrCliente.newItem();")
 
         var _clear = window.document.createElement("div");
         _clear.setAttribute("class", "clearfix");
@@ -152,6 +155,41 @@ var ctrProfissao = (function () {
         _divBottom.appendChild(_btnNew);
         _divBottom.appendChild(_clear);
         _divFilter.appendChild(_divBottom);
+    }
+
+    var _validate = function () {
+        _formValid = 0;
+        _formValid += _txtNomeClienteValidade.call(this);
+        return (_formValid == 0);
+    }
+
+    var _txtNomeClienteValidade = function () {
+        if (_txtNomeCliente.value.length > 0) {
+            return _toggleValidade.call(this, _txtNomeCliente, true, "");
+        } else {
+            return _toggleValidade.call(this, _txtNomeCliente, false, "Erro Nome Cliente!!!");
+        }
+    }
+   
+
+    var _resetValidation = function () {
+        _toggleValidade.call(this, _txtNomeCliente, true, "");
+        $("#divAlertSave").hide();
+        _formValid = 0;
+    }
+
+    var _toggleValidade = function (input, valid, message) {
+        var _div = $(input).parent();
+        if (valid) {
+            $(_div).removeClass("form-group has-error has-feedback");
+            $(_div).find("span").hide();
+            return 0;
+        } else {
+            $(_div).addClass("form-group has-error has-feedback");
+            $(_div).find("span").show();
+            $(_div).find("span")[1].innerHTML = message;
+            return 1;
+        }
     }
 
     var _tableDataBind = function () {
@@ -172,10 +210,23 @@ var ctrProfissao = (function () {
             cell3.setAttribute("width", "30px");
             cell3.setAttribute("align", "center");
 
-            cell0.innerHTML = _datasource[i].CodProfissao;
-            cell1.innerHTML = _datasource[i].DescProfissao;
-            cell2.innerHTML = "<a href='#' onClick='ctrProfissao.editAt(" + _datasource[i].CodProfissao + ");return false;'><span class='glyphicon glyphicon-edit'></span></a></div>";
-            cell3.innerHTML = "<a href='#' onClick='ctrProfissao.confirm(" + _datasource[i].CodProfissao + ");return false;'><span class='glyphicon glyphicon-trash'></span></a></div>";
+            cell0.innerHTML = _datasource[i].CodCliente;
+            cell1.innerHTML = _datasource[i].Nome;
+            cell2.innerHTML = "<a href='#' onClick='ctrCliente.editAt(" + _datasource[i].CodCliente + ");return false;'><span class='glyphicon glyphicon-edit'></span></a></div>";
+            cell3.innerHTML = "<a href='#' onClick='ctrCliente.confirm(" + _datasource[i].CodCliente + ");return false;'><span class='glyphicon glyphicon-trash'></span></a></div>";
+        }
+    }
+
+    var _toggleFilter = function () {
+        if (_toShow) {
+            $("#divFilterBodyCollapse").collapse('show');
+            $("#iconFilter").find('i').removeClass('glyphicon-filter').addClass('glyphicon-chevron-up');
+            _toShow = false;
+        }
+        else {
+            $("#divFilterBodyCollapse").collapse('hide');
+            $("#iconFilter").find('i').removeClass('glyphicon-chevron-up').addClass('glyphicon-filter');
+            _toShow = true;
         }
     }
 
@@ -189,47 +240,29 @@ var ctrProfissao = (function () {
         }
     }
 
-    var _newItem = function () {
-        _idEdit = 0;
-        _txtDescProfissao.value = "";
-        $("#gridPainel").collapse('hide');
-        $("#editPainel").collapse('show');
-        _resetValidation.call(this);
-    }
-
-    var _validate = function () {
-        _formValid = 0;
-        _formValid += _txtDescProfissaoValidade.call(this);
-        return (_formValid == 0);
-    }
-
-    var _txtDescProfissaoValidade = function () {
-        if (_txtDescProfissao.value.length > 3) {
-            return _toggleValidade.call(this, _txtDescProfissao, true, "");
-        } else {
-            return _toggleValidade.call(this, _txtDescProfissao, false, "Erro na Profissao!!!");
-        }
-    }
-
-    var _resetValidation = function () {
-        _toggleValidade.call(this, _txtDescProfissao, true, "");
-   
-        $("#divAlertSave").hide();
-        _formValid = 0;
-    }
-
-    var _toggleValidade = function (input, valid, message) {
-        var _div = $(input).parent();
-        if (valid) {
-            $(_div).removeClass("form-group has-error has-feedback");
-            $(_div).find("span").hide();
-            return 0;
-        } else {
-            $(_div).addClass("form-group has-error has-feedback");
-            $(_div).find("span").show();
-            $(_div).find("span")[1].innerHTML = message;
-            return 1;
-        }
+    function _search(nomeCliente) {
+        $.ajax({
+            async: true,
+            cache: false,
+            url: "http://localhost:3412/cliente",
+            type: "GET",
+            data: {
+                Select: nomeCliente,
+                skip: _skip,
+                take: _take
+            },
+            datatype: "JSON",
+            success: function (data, success) {
+                if (success = "success") {
+                    _datasource = data;
+                    _tableDataBind.call(this);
+                }
+            },
+            error: function () {
+                alert('Erro carregar registros!');
+            }
+        });
+        _searchTotalRecords(nomeCliente, _paginacao);
     }
 
     var _limpar = function () {
@@ -240,17 +273,39 @@ var ctrProfissao = (function () {
         }
     }
 
+    var _editAt = function (id) {
+        for (var i = 0; i < _datasource.length; i++) {
+            if (_datasource[i].CodCliente === id) {
+                _txtNomeCliente.value = _datasource[i].Nome;
+                _txtEndereco.value = _datasource[i].Endereco;
+                _txtCEP.value = _datasource[i].CEP;
+                _idEdit = id;
+            }
+        }
+        $("#gridPainel").collapse('hide');
+        $("#editPainel").collapse('show');
+        _resetValidation.call(this);
+    }
+
+    var _editClose = function () {
+        _idEdit = 0;
+        _txtNomeCliente.value = "";
+        _txtEndereco.value = "";
+        $("#gridPainel").collapse('show');
+        $("#editPainel").collapse('hide');
+    }
+
     var _save = function () {
         if (_validate.call(this)) {
             var _item = {
-                CodProfissao: _idEdit,
-                DescProfissao: _txtDescProfissao.value
+                CodCliente: _idEdit,
+                Nome: _txtNomeCliente.value,
+                Endereco: _txtEndereco.value,
+                CEP: _txtCEP.value
             };
 
             _sabeDB(_item);
-
-            _txtDescProfissao.value = "";
-            _idEdit = 0;
+            _clearEditFields();
 
             _skip = 0;
             _indexPage = 1;
@@ -264,38 +319,40 @@ var ctrProfissao = (function () {
         }
     }
 
-    var _editAt = function (id) {
-        for (var i = 0; i < _datasource.length; i++) {
-            if (_datasource[i].CodProfissao === id) {
-                _txtDescProfissao.value = _datasource[i].DescProfissao;
-                _idEdit = id;
-            }
-        }
-        $("#gridPainel").collapse('hide');
-        $("#editPainel").collapse('show');
-        _resetValidation.call(this);
-    }
-
     var _confirm = function (id) {
         _idExcluir = id;
         for (var i = 0; i < _datasource.length; i++) {
-            if (_datasource[i].CodProfissao === id) {
-                _confirmDeleteProfissao.setMessage(_datasource[i].DescProfissao);
+            if (_datasource[i].CodCliente === id) {
+                _confirmDeleteCliente.setMessage(_datasource[i].Nome);
             }
         }
-        _confirmDeleteProfissao.show();
+        _confirmDeleteCliente.show();
         _resetValidation.call(this);
     }
 
     var _removeAt = function () {
         _deleteDB(_idExcluir);
         _idExcluir = 0;
-        
+
         _skip = 0;
         _indexPage = 1;
 
         _search(_txtBusca.value);
-        _confirmDeleteProfissao.hide();
+        _confirmDeleteCliente.hide();
+        _resetValidation.call(this);
+    }
+
+    function _clearEditFields() {
+        _idEdit = 0;
+        _txtNomeCliente.value = "";
+        _txtEndereco.value = "";
+        _txtCEP.value = "";
+    }
+
+    var _newItem = function () {
+        _clearEditFields();
+        $("#gridPainel").collapse('hide');
+        $("#editPainel").collapse('show');
         _resetValidation.call(this);
     }
 
@@ -303,7 +360,7 @@ var ctrProfissao = (function () {
         $.ajax({
             async: true,
             cache: false,
-            url: "http://localhost:3412/profissao",
+            url: "http://localhost:3412/cliente",
             type: "POST",
             data: JSON.stringify(item),
             datatype: "JSON",
@@ -320,7 +377,7 @@ var ctrProfissao = (function () {
         $.ajax({
             async: true,
             cache: false,
-            url: "http://localhost:3412/profissao",
+            url: "http://localhost:3412/cliente",
             type: "GET",
             data: {
                 Delete: id
@@ -335,95 +392,16 @@ var ctrProfissao = (function () {
         });
     }
 
-    function _search(descProfissao) {
-        $.ajax({
-            async: true,
-            cache: false,
-            url: "http://localhost:3412/profissao",
-            type: "GET",
-            data: {
-                Select: descProfissao,
-                skip: _skip,
-                take: _take
-            },
-            datatype: "JSON",
-            success: function (data, success) {
-                if (success = "success") {
-                    _datasource = data;
-                    _tableDataBind.call(this);
-                }
-            },
-            error: function () {
-                alert('Erro carregar registros!');
-            }
-        });
-
-        _searchTotalRecords(descProfissao, _paginacao);
-
-    }
-
-    function _paginacao(total) {
-
-        var totalPages = Math.ceil(total / _take);
-        
-         _pagination = window.document.getElementById("ulProfissao");
-         if (_pagination) _pagination.remove();
-
-
-        if (totalPages > 1) {
-            var limitButtons = 5;
-            var lastButton = 0;
-            var start = 1;
-        
-            lastButton = (totalPages < limitButtons) ? totalPages : limitButtons;
-
-            if (_indexPage > limitButtons) {
-                start = (_indexPage - limitButtons + 1);
-                lastButton = (start + limitButtons - 1);
-            }
-          
-            _pagination = window.document.createElement("ul");
-            _pagination.setAttribute("id","ulProfissao")
-            _pagination.setAttribute("class", "pagination");
-
-            if (_indexPage > limitButtons) {
-                var li = window.document.createElement("li");
-                li.innerHTML = "<a href='#' onClick='ctrProfissao.SetPage(" + (_indexPage - 1) + ");return false;'>&laquo;</a>";
-                _pagination.appendChild(li);
-            }
-
-            for (i = start; i <= lastButton; i++) {
-                var li = window.document.createElement("li");
-                li.innerHTML = "<a href='#' onClick='ctrProfissao.SetPage(" + i + ");return false;'>" + i + "</a>";
-
-                if (i === _indexPage) {
-                    li.setAttribute("class", "active");
-                }
-                _pagination.appendChild(li);
-            }
-          
-            if (totalPages > lastButton) {
-                if (_indexPage < totalPages) {
-                    var li = window.document.createElement("li");
-                    li.innerHTML = "<a href='#' onClick='ctrProfissao.SetPage(" + (_indexPage + 1) + ");return false;'>&raquo;</a>";
-                    _pagination.appendChild(li);
-                }
-            }
-            _divleft.appendChild(_pagination);
-        }
-       
-    }
-
-    function _searchTotalRecords(descProfissao, callback) {
+    function _searchTotalRecords(NomeCliente, callback) {
         var _skip = 0;
         var _take = 0;
         $.ajax({
             async: true,
             cache: false,
-            url: "http://localhost:3412/profissao",
+            url: "http://localhost:3412/cliente",
             type: "GET",
             data: {
-                Select: descProfissao,
+                Select: NomeCliente,
                 skip: _skip,
                 take: _take
             },
@@ -445,35 +423,67 @@ var ctrProfissao = (function () {
         _search(_txtBusca.value);
     }
 
-    var _editClose = function () {
-        _idEdit = 0;
-        _txtDescProfissao.value = "";
-        $("#gridPainel").collapse('show');
-        $("#editPainel").collapse('hide');
-    }
+    function _paginacao(total) {
 
-    var _toggleFilter = function () {
-        if (_toShow) {
-            $("#divFilterBodyCollapse").collapse('show');
-            $("#iconFilter").find('i').removeClass('glyphicon-filter').addClass('glyphicon-chevron-up');
-            _toShow = false;
+        var totalPages = Math.ceil(total / _take);
+
+        _pagination = window.document.getElementById("ulPaginacao");
+        if (_pagination) _pagination.remove();
+
+
+        if (totalPages > 1) {
+            var limitButtons = 5;
+            var lastButton = 0;
+            var start = 1;
+
+            lastButton = (totalPages < limitButtons) ? totalPages : limitButtons;
+
+            if (_indexPage > limitButtons) {
+                start = (_indexPage - limitButtons + 1);
+                lastButton = (start + limitButtons - 1);
+            }
+
+            _pagination = window.document.createElement("ul");
+            _pagination.setAttribute("id", "ulPaginacao")
+            _pagination.setAttribute("class", "pagination");
+
+            if (_indexPage > limitButtons) {
+                var li = window.document.createElement("li");
+                li.innerHTML = "<a href='#' onClick='ctrCliente.SetPage(" + (_indexPage - 1) + ");return false;'>&laquo;</a>";
+                _pagination.appendChild(li);
+            }
+
+            for (i = start; i <= lastButton; i++) {
+                var li = window.document.createElement("li");
+                li.innerHTML = "<a href='#' onClick='ctrCliente.SetPage(" + i + ");return false;'>" + i + "</a>";
+
+                if (i === _indexPage) {
+                    li.setAttribute("class", "active");
+                }
+                _pagination.appendChild(li);
+            }
+
+            if (totalPages > lastButton) {
+                if (_indexPage < totalPages) {
+                    var li = window.document.createElement("li");
+                    li.innerHTML = "<a href='#' onClick='ctrCliente.SetPage(" + (_indexPage + 1) + ");return false;'>&raquo;</a>";
+                    _pagination.appendChild(li);
+                }
+            }
+            _divleft.appendChild(_pagination);
         }
-        else {
-            $("#divFilterBodyCollapse").collapse('hide');
-            $("#iconFilter").find('i').removeClass('glyphicon-chevron-up').addClass('glyphicon-filter');
-            _toShow = true;
-        }
+
     }
 
     return {
         create: _create,
-        newItem: _newItem,
-        save: _save,
+        toggleFilter: _toggleFilter,
         editAt: _editAt,
+        editClose: _editClose,
+        save: _save,
         confirm: _confirm,
         removeAt: _removeAt,
-        SetPage: _SetPage,
-        editClose: _editClose,
-        toggleFilter: _toggleFilter
+        newItem: _newItem,
+        SetPage: _SetPage
     }
 })();

@@ -73,7 +73,7 @@ var lateral = (function () {
         _menu2.setAttribute("data-toggle", "collapse");
         _menu2.setAttribute("data-target", "#toggleDemo0");
         _menu2.setAttribute("data-parent", "#sidenav01");
-        _menu2.setAttribute("href", "cidade.html");
+        _menu2.setAttribute("href", "Cidade.html");
         _menu2.innerHTML = "<span class='glyphicon glyphicon-align-justify'></span>&nbsp;Cidade";
         _li2.appendChild(_menu2);
 
@@ -84,9 +84,20 @@ var lateral = (function () {
         _menu3.setAttribute("data-toggle", "collapse");
         _menu3.setAttribute("data-target", "#toggleDemo0");
         _menu3.setAttribute("data-parent", "#sidenav01");
-        _menu3.setAttribute("href", "profissao.html");
+        _menu3.setAttribute("href", "Profissao.html");
         _menu3.innerHTML = "<span class='glyphicon glyphicon-align-justify'></span>&nbsp;Profissao";
         _li3.appendChild(_menu3);
+
+        var _li4 = window.document.createElement("li");
+        _ul.appendChild(_li4);
+        var _menu4 = window.document.createElement("a");
+        _menu4.setAttribute("class", "collapsed");
+        _menu4.setAttribute("data-toggle", "collapse");
+        _menu4.setAttribute("data-target", "#toggleDemo0");
+        _menu4.setAttribute("data-parent", "#sidenav01");
+        _menu4.setAttribute("href", "Cliente.html");
+        _menu4.innerHTML = "<span class='glyphicon glyphicon-align-justify'></span>&nbsp;Cliente";
+        _li4.appendChild(_menu4);
 
 
         var _content = window.document.createElement("div");

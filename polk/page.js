@@ -2,6 +2,7 @@ var router = require('./router');
 var cidadeService = require('./cidadeService');
 var profissaoService = require('./profissaoService');
 var bairroService = require('./bairroService');
+var clienteService = require('./clienteService');
 var connection = require('./connection');
 
 var fs = require('fs');
@@ -106,21 +107,7 @@ app.get('/bairro', function (req, res) {
             res.end();
         });
     }
-
-    //if (req.parameters[0].parameter === "Select" && req.parameters[0].value === "All") {
-    //    bairroService.select(db, function (rows) {
-    //        res.write(JSON.stringify(rows));
-    //        res.end();
-    //    });
-    //} else {
-    //    if (req.parameters[0].parameter === "Select") {
-    //        var filtro = req.parameters[0].value;
-    //        bairroService.selectFiltro(db, filtro, function (rows) {
-    //            res.write(JSON.stringify(rows));
-    //            res.end();
-    //        });
-    //    }
-    //}
+  
     if (req.parameters[0].parameter === "Delete") {
         var id = req.parameters[0].value;
         bairroService.delete(db, id, function (rows) {
@@ -141,8 +128,38 @@ app.get('/login', function (req, res) {
             res.end();
         }
     });
+});
 
-    
+app.get('/cliente', function (req, res) {
+
+    if (req.parameters[0].parameter === "Select") {
+
+        var filtro = {
+            NomeCliente: req.parameters[0].value,
+            skip: req.parameters[1].value,
+            take: req.parameters[2].value,
+        };
+
+        clienteService.select(db, filtro, function (rows) {
+            res.write(JSON.stringify(rows));
+            res.end();
+        });
+    }
+
+    if (req.parameters[0].parameter === "Delete") {
+        var id = req.parameters[0].value;
+        clienteService.delete(db, id, function (rows) {
+            res.end('{"success" : "success", "status" : 200}');
+        });
+    }
+});
+
+app.post('/cliente', function (req, res) {
+    var body = req.body;
+    var cidade = JSON.parse(body);
+    clienteService.save(db, cidade, function (result) {
+        res.end('{"success" : "success", "status" : 200}');
+    });
 });
 
 
