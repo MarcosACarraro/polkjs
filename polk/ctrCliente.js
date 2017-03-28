@@ -23,6 +23,20 @@ var ctrCliente = (function () {
     var _txtBairro = {};
     var _txtCEP = {};
 
+    var _txtFoneCom = {};
+    var _txtFoneRes = {};
+    var _txtCelular = {};
+    var _txtEmail = {};
+    var _txtRG = {};
+    var _txtCPF = {};
+    var _ddlSexo = {};
+    var _ddlSituacao = {};
+    var _txtEstadoCivil = {};
+    var _txtObservacao = {};
+    var _txtDataCadastro = {};
+    var _txtDataNasc = {};
+
+
     var _create = function () {
 
         //loginVerify();
@@ -125,9 +139,24 @@ var ctrCliente = (function () {
 
         _txtEndereco = window.document.getElementById("txtEndereco");
         _txtCEP = window.document.getElementById("txtCEP");
+        _txtFoneCom = window.document.getElementById("txtFoneCom");
+        _txtFoneRes = window.document.getElementById("txtFoneRes");
+        _txtCelular = window.document.getElementById("txtCelular");
+        _txtEmail = window.document.getElementById("txtEmail");
+        _txtRG = window.document.getElementById("txtRG");
+        _txtCPF = window.document.getElementById("txtCPF");
+        _ddlSexo = window.document.getElementById("ddlSexo");
+        _ddlSituacao = window.document.getElementById("ddlSituacao");
+        _txtEstadoCivil = window.document.getElementById("txtEstadoCivil");
+        _txtObservacao = window.document.getElementById("txtObservacao");
+        _txtDataCadastro = window.document.getElementById("txtDataCadastro");
+        _txtDataCadastro.disabled = true;
 
-        //_txtBairro = window.document.getElementById("txtBairro");
+        _txtDataNasc = window.document.getElementById("txtDataNasc");
 
+        $(function () {
+            $("#txtDataNasc").datepicker($.datepicker.regional["pt-BR"]);
+        });
 
         _resetValidation.call(this);
 
@@ -279,6 +308,31 @@ var ctrCliente = (function () {
                 _txtNomeCliente.value = _datasource[i].Nome;
                 _txtEndereco.value = _datasource[i].Endereco;
                 _txtCEP.value = _datasource[i].CEP;
+
+                _txtFoneCom.value = _datasource[i].FoneCom;
+                _txtFoneRes.value = _datasource[i].FoneRes;
+                _txtCelular.value = _datasource[i].Celular;
+                _txtEmail.value = _datasource[i].Email;
+                _txtRG.value = _datasource[i].RG;
+                _txtCPF.value = _datasource[i].CPF;
+
+                _txtEstadoCivil.value = _datasource[i].EstadoCivil;
+                _txtObservacao.value = _datasource[i].Obs;
+                _txtDataCadastro.value = _datasource[i].DataCadastro;
+                _txtDataNasc.value = _datasource[i].DataNasc;
+
+                for (j = 0; j < _ddlSexo.length; j++) {
+                    if (_ddlSexo.options[j].value === _datasource[i].Sexo) {
+                        _ddlSexo.selectedIndex = j;
+                    }
+                }
+
+                for (k = 0; k < _ddlSituacao.length; k++) {
+                    if (_ddlSituacao.options[k].value === _datasource[i].Situacao) {
+                        _ddlSituacao.selectedIndex = k;
+                    }
+                }
+
                 _idEdit = id;
             }
         }
@@ -287,10 +341,26 @@ var ctrCliente = (function () {
         _resetValidation.call(this);
     }
 
+    $.datepicker.regional['pt-BR'] = {
+        closeText: 'Fechar',
+        prevText: '&lt;Anterior',
+        nextText: 'Próximo&gt;',
+        currentText: 'Hoje',
+        monthNames: ['Janeiro', 'Fevereiro', 'Marco', 'Abril', 'Maio', 'Junho','Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'],
+        monthNamesShort: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'],
+        dayNames: ['Domingo', 'Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira', 'Sabado'],
+        dayNamesShort: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sab'],
+        dayNamesMin: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sab'],
+        weekHeader: 'Sm',
+        dateFormat: 'dd/mm/yy',
+        firstDay: 0,
+        isRTL: false,
+        showMonthAfterYear: false,
+        yearSuffix: ''
+    };
+
     var _editClose = function () {
-        _idEdit = 0;
-        _txtNomeCliente.value = "";
-        _txtEndereco.value = "";
+        _clearEditFields();
         $("#gridPainel").collapse('show');
         $("#editPainel").collapse('hide');
     }
@@ -301,7 +371,18 @@ var ctrCliente = (function () {
                 CodCliente: _idEdit,
                 Nome: _txtNomeCliente.value,
                 Endereco: _txtEndereco.value,
-                CEP: _txtCEP.value
+                CEP: _txtCEP.value,
+                FoneCom: _txtFoneCom.value,
+                FoneRes: _txtFoneRes.value,
+                Celular: _txtCelular.value,
+                Email:_txtEmail.value,
+                RG:_txtRG.value,
+                CPF:_txtCPF.value,
+                EstadoCivil:_txtEstadoCivil.value,
+                Obs:_txtObservacao.value,
+                DataNasc: _txtDataNasc.value,
+                Sexo: _ddlSexo.options[_ddlSexo.selectedIndex].value,
+                Situacao: _ddlSituacao.options[_ddlSituacao.selectedIndex].value
             };
 
             _sabeDB(_item);
@@ -347,6 +428,19 @@ var ctrCliente = (function () {
         _txtNomeCliente.value = "";
         _txtEndereco.value = "";
         _txtCEP.value = "";
+        _txtFoneCom.value = "";
+        _txtFoneRes.value = "";
+        _txtCelular.value = "";
+        _txtEmail.value = "";
+        _txtRG.value = "";
+        _txtCPF.value = "";
+        _txtEstadoCivil.value = "";
+        _txtObservacao.value = "";
+        _txtDataCadastro.value = "";
+        _txtDataNasc.value = "";
+        _ddlSexo.selectedIndex = 0;
+        _ddlSituacao.selectedIndex = 0;
+
     }
 
     var _newItem = function () {

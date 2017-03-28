@@ -27,14 +27,37 @@ var clienteService = (function () {
                 callback(result);
             });
         } else {
+            var dataNasc = new Date(cliente.DataNasc);
             var query = db.query("UPDATE  Cliente SET " +
                                   " Nome = ? ," +
                                   " Endereco = ? ," +
-                                  " CEP = ? " +
+                                  " CEP = ? , " +
+                                  " FoneCom = ? , " +
+                                  " FoneRes = ? , " +
+                                  " Celular = ? , " +
+                                  " Email = ? , " +
+                                  " RG = ? , " +
+                                  " CPF = ? , " +
+                                  " Sexo = ? , " +
+                                  " Situacao = ? , " +
+                                  " EstadoCivil = ? , " +
+                                  " DataNasc = ? , " +
+                                  " Obs = ?  " +
                                   " WHERE CodCliente = ?",
                                   [cliente.Nome,
                                    cliente.Endereco,
                                    cliente.CEP,
+                                   cliente.FoneCom,
+                                   cliente.FoneRes,
+                                   cliente.Celular,
+                                   cliente.Email,
+                                   cliente.RG,
+                                   cliente.CPF,
+                                   cliente.Sexo,
+                                   cliente.Situacao,
+                                   cliente.EstadoCivil,
+                                   dataNasc,
+                                   cliente.Obs,
                                    cliente.CodCliente],
                                    function (err, result) {
                 if (err) {
