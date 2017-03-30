@@ -35,6 +35,9 @@ var ctrCliente = (function () {
     var _txtObservacao = {};
     var _txtDataCadastro = {};
     var _txtDataNasc = {};
+    var _ddlProfissao = {};
+    var _ddlCidade = {};
+    var _ddlBairro = {};
 
 
     var _create = function () {
@@ -132,6 +135,11 @@ var ctrCliente = (function () {
     }
 
     function createEdit() {
+
+        var item = document.createElement("option");
+        item.text = "Selecione";
+        item.value = 0;
+
         _txtNomeCliente = window.document.getElementById("txtNomeCliente");
         _txtNomeCliente.onchange = _txtNomeClienteValidade;
         _txtNomeCliente.onkeyup = _txtNomeClienteValidade;
@@ -145,6 +153,7 @@ var ctrCliente = (function () {
         _txtEmail = window.document.getElementById("txtEmail");
         _txtRG = window.document.getElementById("txtRG");
         _txtCPF = window.document.getElementById("txtCPF");
+        _txtCPF.setAttribute("maxlength", "14");
         _ddlSexo = window.document.getElementById("ddlSexo");
         _ddlSituacao = window.document.getElementById("ddlSituacao");
         _txtEstadoCivil = window.document.getElementById("txtEstadoCivil");
@@ -153,16 +162,130 @@ var ctrCliente = (function () {
         _txtDataCadastro.disabled = true;
 
         _txtDataNasc = window.document.getElementById("txtDataNasc");
-
+        _txtDataNasc.setAttribute("maxlength", "10");
+        _txtDataNasc.onchange = _datepickerValidade;
         $(function () {
-            $("#txtDataNasc").datepicker($.datepicker.regional["pt-BR"]);
+            $(_txtDataNasc).datepicker($.datepicker.regional["pt-BR"]);
         });
+
+        _ddlProfissao = window.document.getElementById("ddlProfissao");
+        _ddlProfissao.appendChild(item);
+        _loadProfissao();
+
+        _ddlCidade = window.document.getElementById("ddlCidade");
+        _ddlCidade.onchange = _onchangeddlCidade;
+        _ddlCidade.appendChild(item);
+        _loadCidade();
+
+        _ddlBairro = window.document.getElementById("ddlBairro");
+        _ddlBairro.appendChild(item);
 
         _resetValidation.call(this);
 
         $("#gridPainel").collapse('show');
         $("#editPainel").collapse('hide');
     }
+
+    function _onchangeddlCidade() {
+        _loadBairro(_ddlCidade.options[_ddlCidade.selectedIndex].value, 0, _ddlBairroSelect);
+    }
+
+    function _loadProfissao() {
+        $.ajax({
+            async: true,
+            cache: false,
+            url: "http://localhost:3412/profissao",
+            type: "GET",
+            data: {
+                Select: "",
+                skip: 0,
+                take: 1000000
+            },
+            datatype: "JSON",
+            success: function (data, success) {
+                if (success = "success") {
+                    for (var i = 0; i < data.length; i++) {
+                        var item = document.createElement("option");
+                        item.text = data[i].DescProfissao;
+                        item.value = data[i].CodProfissao;
+                        _ddlProfissao.appendChild(item);
+                    }
+                }
+            },
+            error: function () {
+                alert('Erro carregar registros!');
+            }
+        });
+    }
+
+    function _loadCidade() {
+        $.ajax({
+            async: true,
+            cache: false,
+            url: "http://localhost:3412/cidade",
+            type: "GET",
+            data: {
+                Select: "",
+                skip: 0,
+                take: 1000000
+            },
+            datatype: "JSON",
+            success: function (data, success) {
+                if (success = "success") {
+                    for (var i = 0; i < data.length; i++) {
+                        var item = document.createElement("option");
+                        item.text = data[i].NomeCidade;
+                        item.value = data[i].CodCidade;
+                        _ddlCidade.appendChild(item);
+                    }
+                }
+            },
+            error: function () {
+                alert('Erro carregar registros!');
+            }
+        });
+    }
+
+    function _loadBairro(idCidade,idBairro,callback) {
+        $.ajax({
+            async: true,
+            cache: false,
+            url: "http://localhost:3412/bairro",
+            type: "GET",
+            data: {
+                Select: idCidade
+            },
+            datatype: "JSON",
+            success: function (data, success) {
+                if (success = "success") {
+                    var item0 = document.createElement("option");
+                    item0.text = "Selecione";
+                    item0.value = 0;
+                    _ddlBairro.options.length = 0;
+                    _ddlBairro.appendChild(item0);
+                    for (var i = 0; i < data.length; i++) {
+                        var item = document.createElement("option");
+                        item.text = data[i].NomeBairro;
+                        item.value = data[i].CodBairro;
+                        _ddlBairro.appendChild(item)
+                    }
+                    callback(idBairro);
+                }
+            },
+            error: function () {
+                alert('Erro carregar registros!');
+            }
+        });
+    }
+
+    function _ddlBairroSelect(idBairro) {
+        for (p = 0; p < _ddlBairro.options.length; p++) {
+            if (_ddlBairro.options[p].value == idBairro) {
+                _ddlBairro.selectedIndex = p;
+            }
+        }
+    }
+
 
     function createBottom() {
 
@@ -189,6 +312,8 @@ var ctrCliente = (function () {
     var _validate = function () {
         _formValid = 0;
         _formValid += _txtNomeClienteValidade.call(this);
+        _formValid += _datepickerValidade.call(this);
+        _formValid += _txtCPFValidade.call(this);
         return (_formValid == 0);
     }
 
@@ -199,10 +324,62 @@ var ctrCliente = (function () {
             return _toggleValidade.call(this, _txtNomeCliente, false, "Erro Nome Cliente!!!");
         }
     }
+
+    var _datepickerValidade = function () {
+        if (_txtDataNasc.value.length > 0) {
+            var regEx = /^\d{1,2}[\/-]\d{1,2}[\/-]\d{4}$/;
+            if (regEx.test(_txtDataNasc.value)) {
+                return _toggleValidade.call(this, _txtDataNasc, true, "");
+            } else {
+                return _toggleValidade.call(this, _txtDataNasc, false, "Data Invalida!!!");
+            }
+        } else {
+            return _toggleValidade.call(this, _txtDataNasc, true, "");
+        }
+    }
+
+    var _txtCPFValidade = function () {
+        if (_txtCPF.value.length > 0) {
+            var cleanCPF = _txtCPF.value;
+            cleanCPF = cleanCPF.split(".").join("").replace("-","");
+            if (ValidaCPF(cleanCPF)) {
+                return _toggleValidade.call(this, _txtCPF, true, "");
+            } else {
+                return _toggleValidade.call(this, _txtCPF, false, "CPF Invalido!!!");
+            }
+        } else {
+            return _toggleValidade.call(this, _txtCPF, true, "");
+        }
+    }
+
+
+
+    function ValidaCPF(strCPF) {
+        var Soma;
+        var Resto;
+        Soma = 0;
+        if (strCPF == "00000000000") return false;
+
+        for (i = 1; i <= 9; i++) Soma = Soma + parseInt(strCPF.substring(i - 1, i)) * (11 - i);
+        Resto = (Soma * 10) % 11;
+
+        if ((Resto == 10) || (Resto == 11)) Resto = 0;
+        if (Resto != parseInt(strCPF.substring(9, 10))) return false;
+
+        Soma = 0;
+        for (i = 1; i <= 10; i++) Soma = Soma + parseInt(strCPF.substring(i - 1, i)) * (12 - i);
+        Resto = (Soma * 10) % 11;
+
+        if ((Resto == 10) || (Resto == 11)) Resto = 0;
+        if (Resto != parseInt(strCPF.substring(10, 11))) return false;
+        return true;
+    }
    
 
     var _resetValidation = function () {
         _toggleValidade.call(this, _txtNomeCliente, true, "");
+        _toggleValidade.call(this, _txtDataNasc, true, "");
+        _toggleValidade.call(this, _txtCPF, true, "");
         $("#divAlertSave").hide();
         _formValid = 0;
     }
@@ -318,20 +495,33 @@ var ctrCliente = (function () {
 
                 _txtEstadoCivil.value = _datasource[i].EstadoCivil;
                 _txtObservacao.value = _datasource[i].Obs;
-                _txtDataCadastro.value = _datasource[i].DataCadastro;
-                _txtDataNasc.value = _datasource[i].DataNasc;
+                _txtDataCadastro.value = _formatDate(_datasource[i].DataCadastro);
+                _txtDataNasc.value = _formatDate(_datasource[i].DataNasc);
 
-                for (j = 0; j < _ddlSexo.length; j++) {
+                for (j = 0; j < _ddlSexo.options.length; j++) {
                     if (_ddlSexo.options[j].value === _datasource[i].Sexo) {
                         _ddlSexo.selectedIndex = j;
                     }
                 }
 
-                for (k = 0; k < _ddlSituacao.length; k++) {
+                for (k = 0; k < _ddlSituacao.options.length; k++) {
                     if (_ddlSituacao.options[k].value === _datasource[i].Situacao) {
                         _ddlSituacao.selectedIndex = k;
                     }
                 }
+
+                for (m = 0; m < _ddlProfissao.options.length; m++) {
+                    if (_ddlProfissao.options[m].value == _datasource[i].CodProfissao) {
+                        _ddlProfissao.selectedIndex = m;
+                    }
+                }
+                for (n = 0; n < _ddlCidade.options.length; n++) {
+                    if (_ddlCidade.options[n].value == _datasource[i].CodCidade) {
+                        _ddlCidade.selectedIndex = n;
+                    }
+                }
+
+                _loadBairro(_ddlCidade.options[_ddlCidade.selectedIndex].value, _datasource[i].CodBairro, _ddlBairroSelect);
 
                 _idEdit = id;
             }
@@ -365,8 +555,31 @@ var ctrCliente = (function () {
         $("#editPainel").collapse('hide');
     }
 
+    function _SetDateTime(strDateTime) {
+        var dateTime = null;
+        if (strDateTime.length > 0) {
+            dateTime = new Date(parseInt(strDateTime.substring(6, 10)), parseInt(strDateTime.substring(3, 5)) - 1, parseInt(strDateTime.substring(0, 2)));
+        }
+        return dateTime;
+    }
+    function _formatDate(dateTime) {
+        var dateString = "";
+        if (dateTime) {
+            var d = new Date(dateTime);
+            var mes = (d.getMonth() + 1);
+            var dia = d.getDate();
+            var strDia = (dia.toString().length === 1) ? "0" + dia.toString() : dia.toString();
+            var strMes = (mes.toString().length === 1) ? "0" + mes.toString() : mes.toString();
+            dateString = strDia + "/" + strMes + "/" + d.getFullYear();
+        } 
+        return dateString;
+    }
+
+
     var _save = function () {
         if (_validate.call(this)) {
+            var dtDataNasc = _SetDateTime(_txtDataNasc.value);
+
             var _item = {
                 CodCliente: _idEdit,
                 Nome: _txtNomeCliente.value,
@@ -380,9 +593,12 @@ var ctrCliente = (function () {
                 CPF:_txtCPF.value,
                 EstadoCivil:_txtEstadoCivil.value,
                 Obs:_txtObservacao.value,
-                DataNasc: _txtDataNasc.value,
+                DataNasc: dtDataNasc,
                 Sexo: _ddlSexo.options[_ddlSexo.selectedIndex].value,
-                Situacao: _ddlSituacao.options[_ddlSituacao.selectedIndex].value
+                Situacao: _ddlSituacao.options[_ddlSituacao.selectedIndex].value,
+                CodProfissao: _ddlProfissao.options[_ddlProfissao.selectedIndex].value,
+                CodCidade: _ddlCidade.options[_ddlCidade.selectedIndex].value,
+                CodBairro: _ddlBairro.options[_ddlBairro.selectedIndex].value
             };
 
             _sabeDB(_item);
@@ -440,6 +656,9 @@ var ctrCliente = (function () {
         _txtDataNasc.value = "";
         _ddlSexo.selectedIndex = 0;
         _ddlSituacao.selectedIndex = 0;
+        _ddlProfissao.selectedIndex = 0;
+        _ddlCidade.selectedIndex = 0;
+        _ddlBairro.selectedIndex = 0;
 
     }
 

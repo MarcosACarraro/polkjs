@@ -27,7 +27,13 @@ var clienteService = (function () {
                 callback(result);
             });
         } else {
-            var dataNasc = new Date(cliente.DataNasc);
+            var dataNasc = null;
+            
+            if (cliente.DataNasc) dataNasc = new Date(cliente.DataNasc);
+            var codProf = (cliente.CodProfissao > 0) ? cliente.CodProfissao : null;
+            var codCid = (cliente.CodCidade > 0) ? cliente.CodCidade : null;
+            var codBai = (cliente.CodBairro > 0) ? cliente.CodBairro : null;
+
             var query = db.query("UPDATE  Cliente SET " +
                                   " Nome = ? ," +
                                   " Endereco = ? ," +
@@ -42,6 +48,9 @@ var clienteService = (function () {
                                   " Situacao = ? , " +
                                   " EstadoCivil = ? , " +
                                   " DataNasc = ? , " +
+                                  " CodProfissao = ? , " +
+                                  " CodCidade = ? , " +
+                                  " CodBairro = ? , " +
                                   " Obs = ?  " +
                                   " WHERE CodCliente = ?",
                                   [cliente.Nome,
@@ -57,6 +66,9 @@ var clienteService = (function () {
                                    cliente.Situacao,
                                    cliente.EstadoCivil,
                                    dataNasc,
+                                   codProf,
+                                   codCid,
+                                   codBai,
                                    cliente.Obs,
                                    cliente.CodCliente],
                                    function (err, result) {

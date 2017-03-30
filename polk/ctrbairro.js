@@ -10,7 +10,6 @@ var ctrBairro = (function () {
         _confirmDeleteBairro = ConfirmDelete();
         _confirmDeleteBairro.create("editBairro", "Bairro");
 
-
         _idCidade = id;
         createTable();
         createEdit();
