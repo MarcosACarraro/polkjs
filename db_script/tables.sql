@@ -45,4 +45,18 @@ CREATE TABLE Cliente (
     FOREIGN KEY (CodProfissao) REFERENCES Profissao(CodProfissao)
  );
  
+ CREATE TABLE GrupoAcesso(
+	CodGrupoAcesso INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+	Descricao varchar(20) NULL
+);
+
  
+ CREATE TABLE Usuario(
+    CodUsuario INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+	Login varchar(20) NOT NULL,
+	Nome varchar(40) NULL,
+	Senha varchar(15) NULL,
+	Situacao varchar(1) NULL,
+	CodGrupoAcesso INT(6) UNSIGNED NULL,
+    FOREIGN KEY (CodGrupoAcesso) REFERENCES GrupoAcesso(CodGrupoAcesso)
+) ;

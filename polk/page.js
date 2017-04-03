@@ -3,6 +3,9 @@ var cidadeService = require('./cidadeService');
 var profissaoService = require('./profissaoService');
 var bairroService = require('./bairroService');
 var clienteService = require('./clienteService');
+var grupoAcessoService = require('./grupoAcessoService');
+var usuarioService = require('./usuarioService');
+
 var connection = require('./connection');
 
 var fs = require('fs');
@@ -158,6 +161,71 @@ app.post('/cliente', function (req, res) {
     var body = req.body;
     var cidade = JSON.parse(body);
     clienteService.save(db, cidade, function (result) {
+        res.end('{"success" : "success", "status" : 200}');
+    });
+});
+
+
+
+app.get('/grupoAcessoService', function (req, res) {
+    if (req.parameters[0].parameter === "Select") {
+
+        var filtro = {
+            Descricao: req.parameters[0].value,
+            skip: req.parameters[1].value,
+            take: req.parameters[2].value,
+        };
+
+        grupoAcessoService.select(db, filtro, function (rows) {
+            res.write(JSON.stringify(rows));
+            res.end();
+        });
+    }
+    if (req.parameters[0].parameter === "Delete") {
+        var id = req.parameters[0].value;
+        grupoAcessoService.delete(db, id, function (rows) {
+            res.end('{"success" : "success", "status" : 200}');
+        });
+    }
+});
+
+app.post('/grupoAcessoService', function (req, res) {
+    var body = req.body;
+    var grupoAcesso = JSON.parse(body);
+    grupoAcessoService.save(db, grupoAcesso, function (result) {
+        res.end('{"success" : "success", "status" : 200}');
+    });
+});
+
+
+app.get('/usuario', function (req, res) {
+
+    if (req.parameters[0].parameter === "Select") {
+
+        var filtro = {
+            Nome: req.parameters[0].value,
+            skip: req.parameters[1].value,
+            take: req.parameters[2].value,
+        };
+
+        usuarioService.select(db, filtro, function (rows) {
+            res.write(JSON.stringify(rows));
+            res.end();
+        });
+    }
+
+    if (req.parameters[0].parameter === "Delete") {
+        var id = req.parameters[0].value;
+        usuarioService.delete(db, id, function (rows) {
+            res.end('{"success" : "success", "status" : 200}');
+        });
+    }
+});
+
+app.post('/usuario', function (req, res) {
+    var body = req.body;
+    var usuario = JSON.parse(body);
+    usuarioService.save(db, usuario, function (result) {
         res.end('{"success" : "success", "status" : 200}');
     });
 });

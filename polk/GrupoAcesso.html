@@ -3,7 +3,7 @@
 <html lang="pt" xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="utf-8" />
-    <title>Profissão</title>
+    <title>Grupo Acesso</title>
     <link href="style/menu.css" rel="stylesheet" />
     <link href="style/polk.css" rel="stylesheet" />
     <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet" />
@@ -15,40 +15,38 @@
     <script src="storageDB.js"></script>
     <script src="menu.js"></script>
     <script src="lateral.js"></script>
-    <script src="ctrProfissao.js"></script>
+    <script src="ctrGrupoAcesso.js"></script>
     <script src="confirm.js"></script>
 </head>
 <body>
-    <div id="menuDiv"></div>
+   <div id="menuDiv"></div>
     <div id="lateralDiv"></div>
-    <div id="editForm">
+     <div id="editForm">
         <div class="panel panel-primary">
             <div class="panel-heading">
-                <span class='glyphicon glyphicon-th-list'></span><span>&nbsp;Profissao</span>
+                <span class='glyphicon glyphicon-th-list'></span><span>&nbsp;GrupoAcesso</span>
             </div>
             <div class="panel-body">
-                <div id="divProfissao">
-                    <label class="control-label" for="txtDescProfissao">Profissao</label>
-                    <input id="txtDescProfissao" type="text" name="txtDescProfissao" class="form-control" />
+                <div id="divGrupoAcesso">
+                    <label class="control-label" for="txtDescricao">GrupoAcesso</label>
+                    <input id="txtDescricao" type="text" name="txtDescricao" class="form-control" />
                     <span class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span>
-                    <span id="hbProfissao" class="help-block">Profissao</span>
+                    <span id="hbGrupoAcesso" class="help-block">GrupoAcesso</span>
                 </div>
                 <div id="divAlertSave" class="alert alert-danger">
                     <strong>Sinto Muito!</strong> Não foi possível salvar!! 
                 </div>
             </div>
             <div class="panel-footer">
-                <button type="button" class="btn btn-default" onclick="javascript:ctrProfissao.editClose();">Fechar</button>
-                <button type="button" class="btn btn-primary" onclick="javascript:ctrProfissao.save();">Salvar</button>
+                <button type="button" class="btn btn-default" onclick="javascript:ctrGrupoAcesso.editClose();">Fechar</button>
+                <button type="button" class="btn btn-primary" onclick="javascript:ctrGrupoAcesso.save();">Salvar</button>
             </div>
         </div>
     </div>
- </body>  
+</body>
 </html>
 <script type="text/javascript">
     menu.create();
     lateral.create();
-    ctrProfissao.create();
+    ctrGrupoAcesso.create();
 </script>
-
-

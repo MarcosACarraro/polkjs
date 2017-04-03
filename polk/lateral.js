@@ -99,6 +99,28 @@ var lateral = (function () {
         _menu4.innerHTML = "<span class='glyphicon glyphicon-align-justify'></span>&nbsp;Cliente";
         _li4.appendChild(_menu4);
 
+        var _li5 = window.document.createElement("li");
+        _ul.appendChild(_li5);
+        var _menu5 = window.document.createElement("a");
+        _menu5.setAttribute("class", "collapsed");
+        _menu5.setAttribute("data-toggle", "collapse");
+        _menu5.setAttribute("data-target", "#toggleDemo0");
+        _menu5.setAttribute("data-parent", "#sidenav01");
+        _menu5.setAttribute("href", "GrupoAcesso.html");
+        _menu5.innerHTML = "<span class='glyphicon glyphicon-align-justify'></span>&nbsp;Grupo Acesso";
+        _li5.appendChild(_menu5);
+
+        var _li6 = window.document.createElement("li");
+        _ul.appendChild(_li6);
+        var _menu6 = window.document.createElement("a");
+        _menu6.setAttribute("class", "collapsed");
+        _menu6.setAttribute("data-toggle", "collapse");
+        _menu6.setAttribute("data-target", "#toggleDemo0");
+        _menu6.setAttribute("data-parent", "#sidenav01");
+        _menu6.setAttribute("href", "Usuario.html");
+        _menu6.innerHTML = "<span class='glyphicon glyphicon-align-justify'></span>&nbsp;Usuario";
+        _li6.appendChild(_menu6);
+
 
         var _content = window.document.createElement("div");
         _content.setAttribute("id", "divMainContent");
