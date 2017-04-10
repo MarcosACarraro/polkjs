@@ -45,18 +45,49 @@ CREATE TABLE Cliente (
     FOREIGN KEY (CodProfissao) REFERENCES Profissao(CodProfissao)
  );
  
- CREATE TABLE GrupoAcesso(
-	CodGrupoAcesso INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-	Descricao varchar(20) NULL
-);
-
+ CREATE TABLE GrupoAcesso (
+  CodGrupoAcesso int(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  Descricao varchar(20) DEFAULT NULL
+); 
  
- CREATE TABLE Usuario(
-    CodUsuario INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+CREATE TABLE Usuario(
+    CodUsuario  int(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
 	Login varchar(20) NOT NULL,
 	Nome varchar(40) NULL,
 	Senha varchar(15) NULL,
 	Situacao varchar(1) NULL,
 	CodGrupoAcesso INT(6) UNSIGNED NULL,
     FOREIGN KEY (CodGrupoAcesso) REFERENCES GrupoAcesso(CodGrupoAcesso)
-) ;
+);
+
+
+CREATE TABLE Profissional (
+    CodProfissional INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    Login varchar(20) NOT NULL,
+	Nome varchar(80) NULL,
+    Senha varchar(15) NULL,
+	CodGrupoAcesso INT(6) UNSIGNED NULL,
+	Endereco varchar(80) NULL,
+	CodCidade INT(6) UNSIGNED NULL,
+	CodBairro INT(6) UNSIGNED NULL,
+	CEP varchar(10) NULL,
+	DataNasc datetime NULL,
+	FoneCom VARCHAR(20) NULL,
+	FoneRes VARCHAR(20) NULL,
+	Celular VARCHAR(20) NULL,
+	Email VARCHAR(50) NULL,
+	RG VARCHAR(20) NULL,
+	CPF VARCHAR(20) NULL,
+	Sexo VARCHAR(1) NULL,
+	EstadoCivil VARCHAR(10) NULL,
+	DataCadastro TIMESTAMP,
+	Situacao varchar(1) NULL,
+	Obs varchar(250) NULL,
+    FOREIGN KEY (CodCidade) REFERENCES Cidade(CodCidade),
+    FOREIGN KEY (CodBairro) REFERENCES Bairro(CodBairro),
+    FOREIGN KEY (CodGrupoAcesso) REFERENCES GrupoAcesso(CodGrupoAcesso)
+ );
+
+
+
+

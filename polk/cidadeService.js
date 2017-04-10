@@ -51,11 +51,7 @@ var cidadeService = (function () {
 
     var _delete = function (db, id, callback) {
         var query = db.query('DELETE FROM Cidade WHERE CodCidade = ?', [id], function (err, result) {
-            if (err) {
-                console.log(err);
-                throw err
-            };
-            callback();
+            callback(err, result);
         });
     }
 

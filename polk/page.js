@@ -5,6 +5,7 @@ var bairroService = require('./bairroService');
 var clienteService = require('./clienteService');
 var grupoAcessoService = require('./grupoAcessoService');
 var usuarioService = require('./usuarioService');
+var profissionalService = require('./profissionalService');
 
 var connection = require('./connection');
 
@@ -44,7 +45,10 @@ app.get('/cidade', function (req, res) {
    
     if (req.parameters[0].parameter === "Delete") {
         var id = req.parameters[0].value;
-        cidadeService.delete(db, id, function (rows) {
+        cidadeService.delete(db, id, function (err, result) {
+            if (err) {
+                res.end('{"error" : "error", "status" : 500}');
+            };
             res.end('{"success" : "success", "status" : 200}');
         });
     }
@@ -166,6 +170,38 @@ app.post('/cliente', function (req, res) {
 });
 
 
+app.get('/profissional', function (req, res) {
+
+    if (req.parameters[0].parameter === "Select") {
+
+        var filtro = {
+            Nome: req.parameters[0].value,
+            skip: req.parameters[1].value,
+            take: req.parameters[2].value,
+        };
+
+        profissionalService.select(db, filtro, function (rows) {
+            res.write(JSON.stringify(rows));
+            res.end();
+        });
+    }
+
+    if (req.parameters[0].parameter === "Delete") {
+        var id = req.parameters[0].value;
+        profissionalService.delete(db, id, function (rows) {
+            res.end('{"success" : "success", "status" : 200}');
+        });
+    }
+});
+
+app.post('/profissional', function (req, res) {
+    var body = req.body;
+    var profissional = JSON.parse(body);
+    profissionalService.save(db, profissional, function (result) {
+        res.end('{"success" : "success", "status" : 200}');
+    });
+});
+
 
 app.get('/grupoAcessoService', function (req, res) {
     if (req.parameters[0].parameter === "Select") {
@@ -229,6 +265,3 @@ app.post('/usuario', function (req, res) {
         res.end('{"success" : "success", "status" : 200}');
     });
 });
-
-
-//db.end();
